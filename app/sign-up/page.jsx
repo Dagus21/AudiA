@@ -5,9 +5,14 @@ import {auth} from '@/app/firebase/config'
 const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setconfirmPassword] = useState('');
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [confirmShowPassword, setConfirmShowPassword] = useState(false);
 
     const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-
+    
+    // Funciones 
     const handleSignUp = async () => {
         try{
             const res = await createUserWithEmailAndPassword(email,password)
@@ -15,35 +20,88 @@ const SignUp = () => {
             sessionStorage.setItem('user',true)
             setEmail('');
             setPassword('');
+            setconfirmPassword('');
         }catch(e){
             console.error(e)
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setConfirmShowPassword(!confirmShowPassword);
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900">
-            <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
-                <h1 className="text-white text-2xl mb-5">Sign Up</h1>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-customTop to-customBottom" style={{ backgroundPosition: 'top', backgroundSize: '100% 200%', background: 'linear-gradient(to bottom, #060828 46%, #200A3A 100%)' }}>
+            <img src="/image_registro/img_fondo_registro.svg" alt="Imagen de fondo"  className="absolute opacity-80 h-full w-9/12 object-cover left-0" />
+            <div className="bg-transparent p-10 w-5/12 right-20 absolute">
+
+                <img src="\image_registro\Logo_AudIA_registro.svg" alt="" className='pl-10'/>
+                
+                <h1 className='text-2xl'>Correo electronico</h1>
+                <img src="\image_registro\Icono_mail.svg" alt="" className='absolute pt-3' />
                 <input
                     type="email"
-                    placeholder="Email"
+                    placeholder="Digite su correo electronico"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+                    className="w-full p-3 mb-4 bg-transparent text-white placeholder-white border-b border-b-white border-transparent focus:outline-none pl-8"
                 />
+
+
+            <div className="relative w-full">
+                <h1 className="text-2xl text-white mb-4">Contraseña</h1>
+                <img src="/image_registro/Icono_candado.svg" alt="Candado" className="absolute top-11 w-6 h-6" />
+
                 <input
-                    type="password"
-                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}  // Cambia entre "text" y "password" según el estado
+                    placeholder="Digite su contraseña"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+                    className="w-full pb-2 mb-4 bg-transparent text-white placeholder-white border-b border-b-white border-transparent focus:outline-none pl-8"
                 />
+
+                <img
+                    src={showPassword ? "/image_registro/ojo_cerrado.svg" : "/image_registro/ojo_abierto.svg"}
+                    alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    className="absolute right-3 top-11 w-6 h-6 cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                />
+            </div>
+
+
+
+            <div className="relative w-full">
+                <h1 className="text-2xl text-white mb-4">Confirmar contraseña</h1>
+                <img src="/image_registro/Icono_candado.svg" alt="Candado" className="absolute top-11 w-6 h-6" />
+
+                <input
+                    type={confirmShowPassword ? "text" : "password"}  // Cambia entre "text" y "password" según el estado
+                    placeholder="Digite su contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setconfirmPassword(e.target.value)}
+                    className="w-full pb-2 mb-4 bg-transparent text-white placeholder-white border-b border-b-white border-transparent focus:outline-none pl-8"
+                />
+
+                <img
+                    src={confirmShowPassword ? "/image_registro/ojo_cerrado.svg" : "/image_registro/ojo_abierto.svg"}
+                    alt={confirmShowPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    className="absolute right-3 top-11 w-6 h-6 cursor-pointer"
+                    onClick={toggleConfirmPasswordVisibility}
+                />
+            </div>
+
+
                 <button
                     onClick={handleSignUp}
-                    className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500"
+                    className="bg-white text-[#080829] rounded-[32px] font-bold p-4 ml-[80px] mt-3 w-2/3 text-2xl"
                 >
-                    Sign Up
+                    Registrarse
                 </button>
+
             </div>
         </div>
     );
