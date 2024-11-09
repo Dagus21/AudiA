@@ -39,7 +39,10 @@ const SignUp = () => {
             <img src="/image_registro/img_fondo_registro.svg" alt="Imagen de fondo"  className="absolute opacity-80 h-full w-9/12 object-cover left-0" />
             <div className="bg-transparent p-10 w-5/12 right-20 absolute">
 
-                <img src="\image_registro\Logo_AudIA_registro.svg" alt="" className='pl-10'/>
+                <div className="flex items-center justify-center">
+                    <img src="\image_registro\Logo_AudIA_registro.svg" alt="" className='w-7/12'/>
+                </div>
+                
                 
                 <h1 className='text-2xl'>Correo electronico</h1>
                 <img src="\image_registro\Icono_mail.svg" alt="" className='absolute pt-3' />
