@@ -68,7 +68,7 @@ const SignUp = () => {
                 const user = res.user;
                 // Enviar correo de verificación
                 await sendEmailVerification(user);
-                // Efecto que controla la visibilidad del componente durante 3 segundos
+                // Efecto que controla la visibilidad del componente durante 5 segundos
                 setMostrarRegistroExitoso(true);
                 // Vaciar campos
                 setEmail('');
