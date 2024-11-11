@@ -1,5 +1,4 @@
 'use client'
-import Image from "next/image";
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "@/app/firebase/config"
 import { useRouter } from "next/navigation";
@@ -19,6 +18,8 @@ export default function Home() {
         router.push('/sign-in');
     }
 }, [user, userSession, router]);
+
+
   return (
     <div className="font-sans bg-[#1f1f3a] text-white flex flex-col items-center min-h-screen">
       {/* Menú Superior */}

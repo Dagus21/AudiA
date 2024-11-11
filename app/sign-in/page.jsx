@@ -5,33 +5,87 @@ import { auth } from '@/app/firebase/config'
 import { useRouter } from 'next/navigation';
 import OlvidoPassword from '@/components/Alertas/olvido_password';
 import RestablecerCorreo from '@/components/Alertas/restablecer_correo';
+import ValidacionCamposVacios from '@/components/Alertas/validacion_campos_vacios';
+import ValidacionCampoCorreo from '@/components/Alertas/validacion_formato_correo';
+import ValidacionCampoContraseña from '@/components/Alertas/validacion_formato_contraseña';
+import ValidacionCorreo from '@/components/Alertas/verificacion_correo';
+import ValidacionExistir from '@/components/Alertas/usuario_inexistente';
+
 
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  //const auth = getAuth();
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false);
   const [mostrarAlertaCorreo, setMostrarAlertaCorreo] = useState(false);
   const [mostrarAlertaContra, setMostrarAlertaContra] = useState(false);
+  const [mostrarValidacionCamposVacios, setMostrarValidacionCamposVacios] = useState(false);
+  const [mostrarValidacionCampoCorreo, setMostrarValidacionCampoCorreo] = useState(false);
+  const [mostrarValidacionCampoContraseña, setMostrarValidacionCampoContraseña] = useState(false);
+  const [mostrarValidacionCorreo, setMostrarValidacionCorreo] = useState(false);
+  const [mostrarValidacionExistir, setMostrarValidacionExistir] = useState(false);
+
+
+
+  // Funciones
+  // Función para validar todos los campos
+  const validateFields = () => {
+    // Expresión regular para validar el formato de un correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Expresión regular para validar la contraseña:
+    // - Mínimo 8 caracteres
+    // - Al menos una letra mayúscula
+    // - Al menos un número
+    // - Al menos un carácter especial
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    if (!email || !password) {
+        setMostrarValidacionCamposVacios(true); // Mostrar la alerta si hay campos vacíos
+        throw new Error('Campos vacíos');
+    }
+    if (!emailRegex.test(email)) {
+        setMostrarValidacionCampoCorreo(true); // Mostrar la alerta si el formato de correo es incorrecto
+        throw new Error('Formato de correo electrónico inválido');
+    }
+    if (!passwordRegex.test(password)) {
+        setMostrarValidacionCampoContraseña(true); // Mostrar la alerta si la contraseña no cumple con los requisitos
+        throw new Error('La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, un número y un carácter especial.');
+    }
+
+};
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleSignIn = async () => {
-    try{
-        const res = await signInWithEmailAndPassword(email,password);
-        console.log({res});
-        sessionStorage.setItem('user',true)
-        setEmail('');
-        setPassword('');
-        router.push('/')
-    }catch(e){
-        console.error(e)
+    try {
+        validateFields();
+        const res = await signInWithEmailAndPassword(email, password);
+        if (res && res.user) {
+            const user = res.user;
+            if (!user.emailVerified) {
+                setMostrarValidacionCorreo(true);
+                setEmail('');
+                setPassword('');
+            } else {
+                setEmail('');
+                setPassword('');
+                router.push('/');
+            }
+        } else {
+          setMostrarValidacionExistir(true);
+        }
+    } catch (e) {
+
+        console.log(e);
+
     }
-    
-  };
+};
+
+
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0E0037] via-[#230C4D] to-[#3A1864]">
@@ -89,49 +143,51 @@ const SignIn = () => {
             </div>
           </div>
           
-          <div className="flex flex-col items-center text-center pt-5 space-y-2">
+<div className="flex flex-col items-center text-center pt-5 space-y-2">
+
   <a href="/sign-up" className="text-white text-lg font-semibold underline">
-    ¿Aún no estás registrado?
+  ¿Aún no estás registrado?
   </a>
 
   <div className="relative">
-    <a 
-      href="#" 
-      onClick={(e) => {
-        e.preventDefault();
-        setMostrarAlertaContra(true);
-      }}
-      className="text-white text-lg font-semibold underline"
-    >
-      ¿Olvidaste tu contraseña?
-    </a>
+      <a 
+        href="#" 
+        onClick={(e) => {
+          e.preventDefault();
+          setMostrarAlertaContra(true);
+        }}
+        className="text-white text-lg font-semibold underline"
+      >
+        ¿Olvidaste tu contraseña?
+      </a>
 
-    {mostrarAlertaContra && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-        <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
-      </div>
-    )}
+      {mostrarAlertaContra && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+          <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
+        </div>
+      )}
+    </div>
+
+    <div className="relative">
+      <a 
+        href="#" 
+        onClick={(e) => {
+          e.preventDefault();
+          setMostrarAlertaCorreo(true);
+        }}
+        className="text-white text-lg font-semibold underline"
+      >
+        Restablecer correo electrónico
+      </a>
+
+      {mostrarAlertaCorreo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+          <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
+        </div>
+      )}
+    </div>
+
   </div>
-
-  <div className="relative">
-    <a 
-      href="#" 
-      onClick={(e) => {
-        e.preventDefault();
-        setMostrarAlertaCorreo(true);
-      }}
-      className="text-white text-lg font-semibold underline"
-    >
-      Restablecer correo electrónico
-    </a>
-
-    {mostrarAlertaCorreo && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-        <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
-      </div>
-    )}
-  </div>
-</div>
 
 
           <div className="flex items-center justify-center pt-5">
@@ -139,11 +195,39 @@ const SignIn = () => {
               onClick={handleSignIn}
               className="w-3/6 p-3 bg-white rounded-3xl hover:bg-indigo-100"
             >
-              <h2 className="text-[#2A2C7D] font-extrabold ">Entrar</h2>
+              <h2 className="text-[#2A2C7D] font-extrabold ">Iniciar sesion</h2>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Componentes de las alertas */}
+
+      {mostrarValidacionCamposVacios && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+                    <ValidacionCamposVacios setMostrarValidacionCamposVacios={setMostrarValidacionCamposVacios} />
+                </div>
+      )}
+      {mostrarValidacionCampoCorreo && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+              <ValidacionCampoCorreo setMostrarValidacionCampoCorreo={setMostrarValidacionCampoCorreo} />
+          </div>
+      )}
+      {mostrarValidacionCampoContraseña && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+              <ValidacionCampoContraseña setMostrarValidacionCampoContraseña={setMostrarValidacionCampoContraseña} />
+          </div>
+      )}
+      {mostrarValidacionCorreo && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+              <ValidacionCorreo setMostrarValidacionCorreo={setMostrarValidacionCorreo} />
+          </div>
+      )}
+      {mostrarValidacionExistir && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+              <ValidacionExistir setMostrarValidacionExistir={setMostrarValidacionExistir} />
+          </div>
+      )}
     </div>
   );
 };
