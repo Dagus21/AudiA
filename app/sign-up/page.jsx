@@ -9,6 +9,7 @@ import ValidacionCampoCorreo from '@/components/Alertas/validacion_formato_corre
 import ValidacionCampoContraseña from '@/components/Alertas/validacion_formato_contraseña';
 import ValidacionConfirmarContraseña from '@/components/Alertas/validacion_confirmar_contraseña';
 import RegistroExitoso from '@/components/Alertas/registro_correcto';
+import ValidacionUsuarioRegistrado from '@/components/Alertas/verificacion_registro';
 
 
 const SignUp = () => {
@@ -24,6 +25,8 @@ const SignUp = () => {
     const [mostrarValidacionCampoContraseña, setMostrarValidacionCampoContraseña] = useState(false);
     const [mostrarValidacionConfirmarContraseña, setMostrarValidacionConfirmarContraseña] = useState(false);
     const [mostrarRegistroExitoso, setMostrarRegistroExitoso] = useState(false);
+    const [mostrarValidacionUsuarioRegistrado, setMostrarValidacionUsuarioRegistrado] = useState(false);
+
 
     // Función para validar todos los campos
     const validateFields = () => {
@@ -54,30 +57,40 @@ const SignUp = () => {
         }
     };
 
-    // Función de registro del usuario
     const handleSignUp = async () => {
         try {
             validateFields();
-            // Crear el usuario
+            // Intentar crear el usuario
             const res = await createUserWithEmailAndPassword(email, password);
-            sessionStorage.setItem('user', true);
-            const user = res.user;
-            // Enviar correo de verificación
-            await sendEmailVerification(user);
-            // Efecto que controla la visibilidad del componente durante 3 segundos
-            setMostrarRegistroExitoso(true);
-            // Vaciar campos
-            setEmail('');
-            setPassword('');
-            setConfirmPassword('');
-             // Redirigir después de 5 segundos
-            setTimeout(() => {
-                router.push('/sign-in'); 
-            }, 5000); // 5000 ms = 5 segundos
+            if (res && res.user) {
+                // Guardar el estado del usuario
+                sessionStorage.setItem('user', true);
+                const user = res.user;
+                // Enviar correo de verificación
+                await sendEmailVerification(user);
+                // Efecto que controla la visibilidad del componente durante 3 segundos
+                setMostrarRegistroExitoso(true);
+                // Vaciar campos
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
+                // Redirigir después de 5 segundos
+                setTimeout(() => {
+                    router.push('/sign-in'); 
+                }, 5000); // 5000 ms = 5 segundos
+            }else{
+                setMostrarValidacionUsuarioRegistrado(true);
+                // Vaciar campos
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
+                throw new Error('El usuario que se intenta registrar ya existe previamente');
+            }
         } catch (e) {
             console.log(e)
         }
     };
+    
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -91,7 +104,7 @@ const SignUp = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-customTop to-customBottom" style={{ backgroundPosition: 'top', backgroundSize: '100% 200%', background: 'linear-gradient(to bottom, #060828 46%, #200A3A 100%)' }}>
             <img src="/image_registro/img_fondo_registro.svg" alt="Imagen de fondo" className="absolute opacity-80 h-full w-9/12 object-cover left-0" />
             
-            <div className="bg-transparent p-10 w-5/12 right-20 absolute">
+            <div className="bg-transparent p-10 w-5/12 right-20 absolute bottom-15">
                 <div className="flex items-center justify-center">
                     <img src="\image_registro\Logo_AudIA_registro.svg" alt="" className='w-7/12'/>
                 </div>
@@ -148,6 +161,12 @@ const SignUp = () => {
                 >
                     Registrarse
                 </button>
+
+                <a href="/sign-in" className="text-white text-lg font-semibold underline flex justify-center mt-4">
+                Iniciar sesión
+                </a>
+
+
             </div>
 
             {/* Componentes de las alertas */}
@@ -175,6 +194,11 @@ const SignUp = () => {
             {mostrarRegistroExitoso && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
                     <RegistroExitoso setMostrarRegistroExitoso={setMostrarRegistroExitoso} />
+                </div>
+            )}
+            {mostrarValidacionUsuarioRegistrado && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+                    <ValidacionUsuarioRegistrado setMostrarValidacionUsuarioRegistrado={setMostrarValidacionUsuarioRegistrado} />
                 </div>
             )}
         </div>

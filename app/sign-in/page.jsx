@@ -70,6 +70,7 @@ const SignIn = () => {
                 setMostrarValidacionCorreo(true);
                 setEmail('');
                 setPassword('');
+                throw new Error('El usuario no ha verificado el correo electronico');
             } else {
                 setEmail('');
                 setPassword('');
@@ -77,11 +78,10 @@ const SignIn = () => {
             }
         } else {
           setMostrarValidacionExistir(true);
+          throw new Error('El usuario no existe o no se ha registrado');
         }
     } catch (e) {
-
         console.log(e);
-
     }
 };
 
