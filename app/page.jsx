@@ -24,35 +24,35 @@ export default function Home() {
     <div className="font-sans bg-[#1f1f3a] text-white flex flex-col items-center min-h-screen">
       {/* Menú Superior */}
       <header className="w-full bg-[#2a2a4a] fixed top-0 left-0 z-50">
-        <nav className="bg-[#4a3e8a] rounded-full p-4 mt-4 mx-auto shadow-lg flex justify-center items-center w-fit">
-          <ul className="flex gap-10 list-none p-0 m-0">
-            <li>
-              <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
-                <img src="/image_home/Buttom_home.svg" alt="Home" className="w-8 h-8" />
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
-                <img src="/image_home/Spotify.svg" alt="Spotify" className="w-8 h-8" />
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
-                <img src="/image_home/music.svg" alt="Music" className="w-8 h-8" />
-              </a>
-            </li>
-            <li>
-              <a className="text-[#c7c7d1] hover:text-white transition-colors">
-                <img src="/image_home/logout.png" alt="Logout" className="w-8 h-8" 
-                onClick={() => {
+    <nav className="bg-[#4a3e8a] rounded-full p-4 mt-4 mx-auto shadow-lg flex justify-center items-center w-fit">
+      <ul className="flex gap-10 list-none p-0 m-0">
+        <li>
+          <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
+            <img src="/image_home/Buttom_home.svg" alt="Home" className="w-8 h-8 transition-colors hover:filter-white" />
+          </a>
+        </li>
+        <li>
+          <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
+            <img src="/image_home/Spotify.svg" alt="Spotify" className="w-8 h-8 transition-colors hover:filter-white" />
+          </a>
+        </li>
+        <li>
+          <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
+            <img src="/image_home/music.svg" alt="Music" className="w-8 h-8 transition-colors hover:filter-white" />
+          </a>
+        </li>
+        <li>
+          <a className="text-[#c7c7d1] hover:text-white transition-colors">
+            <img src="/image_home/logout.png" alt="Logout" className="w-8 h-8 transition-colors hover:filter-white" 
+              onClick={() => {
                 signOut(auth)
                 sessionStorage.removeItem('user')
-                }}/>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
+              }} />
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
       {/* Contenido Principal */}
       <main className="mt-20 max-w-2xl px-4 text-center">
@@ -79,27 +79,27 @@ export default function Home() {
           <h3 className="text-2xl mb-8 text-[#eaeaea]">Pistas generadas con Magenta</h3>
           <div className="track flex items-center justify-center mb-8">
             <img
-              src="img/imagen-cancion1.jpg"
-              alt="Icono 1"
-              className="w-24 h-24 rounded-full mr-4 object-cover"
+              src="image_home/imagen-cancion1.jpg" 
+              alt="Icono 1" 
+              className="w-24 h-24 rounded-full mr-4 object-cover" 
             />
-            <p className="text-lg text-[#eaeaea]">Machine Learning Piano Progressions with Magenta's Performance RNN</p>
+            <a href="https://www.youtube.com/watch?v=NWy_IEcmqjo&ab_channel=Christian" className="text-lg text-[#eaeaea]">Machine Learning Piano Progressions with Magenta's Performance RNN </a>
           </div>
           <div className="track flex items-center justify-center mb-8">
-            <p className="text-lg text-[#eaeaea] mr-4">Performance RNN - TensorFlow / Magenta</p>
+            <a href= "https://www.youtube.com/watch?v=JVf6esaXeLE&ab_channel=FoobaruAI "lassName="text-lg text-[#eaeaea] mr-4">Performance RNN - TensorFlow / Magenta</a>
             <img
-              src="img/imagen-cancion2.jpg"
+              src="image_home/imagen-cancion2.jpg"
               alt="Icono 2"
               className="w-24 h-24 rounded-full object-cover"
             />
           </div>
           <div className="track flex items-center justify-center mb-8">
             <img
-              src="img/imagen-cancion3.jpg"
+              src="image_home/imagen-cancion3.jpg"
               alt="Icono 3"
               className="w-24 h-24 rounded-full mr-4 object-cover"
             />
-            <p className="text-lg text-[#eaeaea]">Generating Music with Expressive Timing and Dynamics - Magenta PerformanceRNN</p>
+            <a href="https://www.youtube.com/watch?v=C065_AhBQEg" className="text-lg text-[#eaeaea]">Generating Music with Expressive Timing and Dynamics - Magenta PerformanceRNN</a>
           </div>
         </section>
       </main>
@@ -107,8 +107,8 @@ export default function Home() {
       {/* Pie de página */}
       <footer className="w-full bg-[#0f092e] text-center p-8 mt-12 text-[#eaeaea] text-sm">
         <p className="mb-2">Team AudIA ®</p>
-        <a href="#" className="inline-flex items-center gap-2 hover:text-white">
-          <img src="img/logo-git.png" alt="Logo GitHub" className="w-6 h-6" />
+        <a href="https://github.com/Dagus21/AudiA" className="flex items-center justify-center space-x-2 mt-2 text-white" aria-label="Visit GitHub">
+          <img src="image_home/logo-git.png" alt="Logo GitHub"  className="w-8 h-8" />
           GitHub
         </a>
         <p className="mt-2">Todos los derechos reservados</p>
