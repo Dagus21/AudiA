@@ -10,6 +10,8 @@ import ValidacionCampoCorreo from '@/components/Alertas/validacion_formato_corre
 import ValidacionCampoContraseña from '@/components/Alertas/validacion_formato_contraseña';
 import ValidacionCorreo from '@/components/Alertas/verificacion_correo';
 import ValidacionExistir from '@/components/Alertas/usuario_inexistente';
+import { sendSignInLinkToEmail } from 'firebase/auth';
+import VeficacionInicio from '@/components/Alertas/envioVerificacionInicio';
 
 
 
@@ -27,6 +29,7 @@ const SignIn = () => {
   const [mostrarValidacionCampoContraseña, setMostrarValidacionCampoContraseña] = useState(false);
   const [mostrarValidacionCorreo, setMostrarValidacionCorreo] = useState(false);
   const [mostrarValidacionExistir, setMostrarValidacionExistir] = useState(false);
+  const [mostrarVeficacionInicio, setMostrarVeficacionInicio] = useState(false);
 
 
 
@@ -72,13 +75,24 @@ const SignIn = () => {
                 setPassword('');
                 throw new Error('El usuario no ha verificado el correo electronico');
             } else {
-                setEmail('');
-                setPassword('');
+                // // Enviar un correo de verificación adicional para confirmar que es el usuario quien intenta iniciar sesión
+                // const actionCodeSettings = {
+                //     url: 'http://localhost:3000/confirm', // URL a la que se redirige al usuario tras verificar el enlace
+                //     handleCodeInApp: true,
+                // };
+                // await sendSignInLinkToEmail(user.auth, user.email, actionCodeSettings);
+                // // Almacenar el email en localStorage para recuperarlo después de que el usuario haga clic en el enlace
+                // window.localStorage.setItem('emailForSignIn', user.email);
+                // setEmail('');
+                // setPassword('');
+                // setMostrarVeficacionInicio(true);
                 router.push('/');
             }
         } else {
-          setMostrarValidacionExistir(true);
-          throw new Error('El usuario no existe o no se ha registrado');
+            setMostrarValidacionExistir(true);
+            setEmail('');
+            setPassword('');
+            throw new Error('El usuario no existe o no se ha registrado');
         }
     } catch (e) {
         console.log(e);
@@ -226,6 +240,11 @@ const SignIn = () => {
       {mostrarValidacionExistir && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
               <ValidacionExistir setMostrarValidacionExistir={setMostrarValidacionExistir} />
+          </div>
+      )}
+      {mostrarVeficacionInicio && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+              <VeficacionInicio setMostrarVeficacionInicio={setMostrarVeficacionInicio} />
           </div>
       )}
     </div>
