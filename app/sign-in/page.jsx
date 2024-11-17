@@ -75,18 +75,18 @@ const SignIn = () => {
                 setPassword('');
                 throw new Error('El usuario no ha verificado el correo electronico');
             } else {
-                // // Enviar un correo de verificación adicional para confirmar que es el usuario quien intenta iniciar sesión
-                // const actionCodeSettings = {
-                //     url: 'http://localhost:3000/confirm', // URL a la que se redirige al usuario tras verificar el enlace
-                //     handleCodeInApp: true,
-                // };
-                // await sendSignInLinkToEmail(user.auth, user.email, actionCodeSettings);
-                // // Almacenar el email en localStorage para recuperarlo después de que el usuario haga clic en el enlace
-                // window.localStorage.setItem('emailForSignIn', user.email);
-                // setEmail('');
-                // setPassword('');
-                // setMostrarVeficacionInicio(true);
-                router.push('/');
+                // Enviar un correo de verificación adicional para confirmar que es el usuario quien intenta iniciar sesión
+                const actionCodeSettings = {
+                    url: 'http://localhost:3000/confirm', // URL a la que se redirige al usuario tras verificar el enlace
+                     handleCodeInApp: true,
+                 };
+                 await sendSignInLinkToEmail(user.auth, user.email, actionCodeSettings);
+                 // Almacenar el email en localStorage para recuperarlo después de que el usuario haga clic en el enlace
+                 window.localStorage.setItem('emailForSignIn', user.email);
+                 setEmail('');
+                 setPassword('');
+                 setMostrarVeficacionInicio(true);
+                router.push('/sign-in');
             }
         } else {
             setMostrarValidacionExistir(true);
