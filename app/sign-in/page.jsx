@@ -97,7 +97,7 @@ const SignIn = () => {
     } catch (e) {
         console.log(e);
     }
-};
+  };
 
 
   
@@ -157,51 +157,51 @@ const SignIn = () => {
             </div>
           </div>
           
-<div className="flex flex-col items-center text-center pt-5 space-y-2">
+        <div className="flex flex-col items-center text-center pt-5 space-y-2">
 
-  <a href="/sign-up" className="text-white text-lg font-semibold underline">
-  ¿Aún no estás registrado?
-  </a>
+          <a href="/sign-up" className="text-white text-lg font-semibold underline">
+          ¿Aún no estás registrado?
+          </a>
 
-  <div className="relative">
-      <a 
-        href="#" 
-        onClick={(e) => {
-          e.preventDefault();
-          setMostrarAlertaContra(true);
-        }}
-        className="text-white text-lg font-semibold underline"
-      >
-        ¿Olvidaste tu contraseña?
-      </a>
+          <div className="relative">
+              <a 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMostrarAlertaContra(true);
+                }}
+                className="text-white text-lg font-semibold underline"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
 
-      {mostrarAlertaContra && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-          <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
-        </div>
-      )}
-    </div>
+              {mostrarAlertaContra && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+                  <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
+                </div>
+              )}
+            </div>
 
-    <div className="relative">
-      <a 
-        href="#" 
-        onClick={(e) => {
-          e.preventDefault();
-          setMostrarAlertaCorreo(true);
-        }}
-        className="text-white text-lg font-semibold underline"
-      >
-        Restablecer correo electrónico
-      </a>
+            <div className="relative">
+              <a 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMostrarAlertaCorreo(true);
+                }}
+                className="text-white text-lg font-semibold underline"
+              >
+                Restablecer correo electrónico
+              </a>
 
-      {mostrarAlertaCorreo && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-          <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
-        </div>
-      )}
-    </div>
+              {mostrarAlertaCorreo && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+                  <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
+                </div>
+              )}
+            </div>
 
-  </div>
+          </div>
 
 
           <div className="flex items-center justify-center pt-5">
@@ -209,7 +209,7 @@ const SignIn = () => {
               onClick={handleSignIn}
               className="w-3/6 p-3 bg-white rounded-3xl hover:bg-indigo-100"
             >
-              <h2 className="text-[#2A2C7D] font-extrabold ">Iniciar sesion</h2>
+              <h2 className="text-[#2A2C7D] font-extrabold ">Iniciar sesión</h2>
             </button>
           </div>
         </div>
