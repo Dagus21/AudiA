@@ -75,7 +75,7 @@ const SignIn = () => {
                 setPassword('');
                 throw new Error('El usuario no ha verificado el correo electronico');
             } else {
-                // // Enviar un correo de verificación adicional para confirmar que es el usuario quien intenta iniciar sesión
+                // Enviar un correo de verificación adicional para confirmar que es el usuario quien intenta iniciar sesión
                 // const actionCodeSettings = {
                 //     url: 'http://localhost:3000/confirm', // URL a la que se redirige al usuario tras verificar el enlace
                 //     handleCodeInApp: true,
