@@ -83,45 +83,16 @@ export default function SingInSpotify() {
 			</header>
 
 			{/* Contenido Principal */}
-			<main className="mt-20 px-4 w-1/2 text-center">
-				<div className=" pt-24 pb-16 px-24 ">
-					<h2 className="text-white text-3xl mt-5 text-left">Correo Electrónico</h2>
-					<div className='flex items-center justify-center border-b-2 border-white h-auto'>
-						<div className="flex items-center justify-center">
-							<img src='/img/icono_mail.svg' alt="Mail" className="w-full" />
-						</div>
-						<input
-						type="email"
-						placeholder="Digite su correo electrónico"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						className="w-full p-3 bg-transparent rounded outline-none text-white placeholder-white"
-						/>
-					</div>
-
-					<h2 className="text-white text-3xl mt-5 text-left">Contraseña</h2>
-					<div className="flex items-center justify-center border-b-2 border-white h-auto">
-						<div className="flex items-center justify-center">
-							<img src='/img/candado.svg' alt="Candado" className="w-full" />
-						</div>
-
-						<input
-						type={showPassword ? "text" : "password"} // Cambia el tipo de input según el estado
-						placeholder="Digite su contraseña"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						className="w-full p-3 bg-transparent rounded outline-none text-white placeholder-white"
-						/>
-
-						<div className="flex items-center justify-center cursor-pointer" onClick={togglePasswordVisibility}>
-							{showPassword ? (
-								<img src='/img/eye-closed.svg' alt="Ver contraseña" className="w-full" />
-							) : (
-								<img src='/img/eye-open.svg' alt="Ocultar contraseña" className="w-full" />
-							)}
-						</div>
+			<main className="mt-20 px-4 w-[75%] text-center">
+				<div className="flex pt-24 pb-16 px-24">
+					<img src="/image_spotify/spotify_icon_grande.svg" alt="email" className="" /> 
+					<div className="flex flex-col items-center justify-center ml-[435px]">
+						<h2 className="text-white text-3xl text-right font-bold">
+							Para escuchar tus Playlist de Spotify debes iniciar sesión
+						</h2>
 					</div>
 				</div>
+
 				<div className="flex items-center justify-center">
 					<button
 						//onClick={handleSignIn}
