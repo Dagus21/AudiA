@@ -34,7 +34,7 @@ export default function Home() {
           <li>
             <a className="text-[#c7c7d1] hover:text-white transition-colors"
             onClick={() => {
-              router.push('/section-spotify');
+              router.push('/sign-in-spotify');
             }}>
               <img src="/image_home/Spotify.svg" alt="Spotify" className="w-8 h-8 transition-colors hover:filter-white" />
             </a>

@@ -4,6 +4,7 @@ import { auth } from "@/app/firebase/config"
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { useEffect, useState } from 'react';
+import { signIn } from 'next-auth/react';
 
 export default function SingInSpotify() {
 
@@ -99,6 +100,14 @@ export default function SingInSpotify() {
 						className="w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100"
 					>
 						<h2 className="text-[#000000] font-extrabold text-3xl">Iniciar sesión</h2>
+					</button>
+				</div>
+				<div className="flex items-center justify-center h-screen">
+					<button
+						onClick={() => signIn('spotify')}
+						className="px-4 py-2 bg-green-500 text-white rounded"
+					>
+						Iniciar sesión con Spotify
 					</button>
 				</div>
 			</main>
