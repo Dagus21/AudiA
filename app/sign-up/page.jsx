@@ -101,72 +101,117 @@ const SignUp = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-customTop to-customBottom" style={{ backgroundPosition: 'top', backgroundSize: '100% 200%', background: 'linear-gradient(to bottom, #060828 46%, #200A3A 100%)' }}>
-            <img src="/image_registro/img_fondo_registro.svg" alt="Imagen de fondo" className="absolute opacity-80 h-full w-9/12 object-cover left-0" />
-            
-            <div className="bg-transparent p-10 w-5/12 right-20 absolute bottom-15">
-                <div className="flex items-center justify-center">
-                    <img src="\image_registro\Logo_AudIA_registro.svg" alt="" className='w-7/12'/>
+        <div
+        className="min-h-screen flex items-center justify-center bg-gradient-to-b from-customTop to-customBottom relative overflow-hidden"
+        style={{
+            backgroundPosition: "top",
+            backgroundSize: "100% 200%",
+            backgroundImage: "linear-gradient(to bottom, #060828 46%, #200A3A 100%)",
+        }}
+        >
+            {/* Imagen de fondo */}
+            <img
+                src="/image_registro/img_fondo_registro.svg"
+                alt="Imagen de fondo"
+                className="absolute inset-0 w-full h-full object-cover opacity-80"
+            />
+
+            {/* Contenedor principal */}
+            <div
+                className="relative sm:p-10 sm:w-5/12 w-11/12 z-10
+                        lg:bg-transparent lg:p-10 lg:w-5/12 lg:right-20 lg:absolute lg:bottom-15"
+            >
+                {/* Logo */}
+                <div className="flex items-center justify-center mb-6">
+                <img
+                    src="/image_registro/Logo_AudIA_registro.svg"
+                    alt=""
+                    className="w-7/12 sm:w-3/4"
+                />
                 </div>
 
-                <h1 className='text-2xl'>Correo electrónico</h1>
-                <img src="\image_registro\Icono_mail.svg" alt="" className='absolute pt-3' />
+                {/* Formulario */}
+                <h1 className="text-2xl">Correo electrónico</h1>
+                <div className="relative mb-6">
+                <img
+                    src="/image_registro/Icono_mail.svg"
+                    alt=""
+                    className="absolute top-3 left-2 w-6"
+                />
                 <input
                     type="email"
                     placeholder="Digite su correo electrónico"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3 mb-4 bg-transparent text-white placeholder-white border-b border-b-white border-transparent focus:outline-none pl-8"
+                    className="w-full p-3 bg-transparent text-white placeholder-white border-b border-b-white focus:outline-none pl-10"
                 />
-
-                <div className="relative w-full">
-                    <h1 className="text-2xl text-white mb-4">Contraseña</h1>
-                    <img src="/image_registro/Icono_candado.svg" alt="Candado" className="absolute top-11 w-6 h-6" />
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Digite su contraseña"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pb-2 mb-4 bg-transparent text-white placeholder-white border-b border-b-white border-transparent focus:outline-none pl-8"
-                    />
-                    <img
-                        src={showPassword ? "/image_registro/ojo_cerrado.svg" : "/image_registro/ojo_abierto.svg"}
-                        alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                        className="absolute right-3 top-11 w-6 h-6 cursor-pointer"
-                        onClick={togglePasswordVisibility}
-                    />
                 </div>
 
-                <div className="relative w-full">
-                    <h1 className="text-2xl text-white mb-4">Confirmar contraseña</h1>
-                    <img src="/image_registro/Icono_candado.svg" alt="Candado" className="absolute top-11 w-6 h-6" />
-                    <input
-                        type={confirmShowPassword ? "text" : "password"}
-                        placeholder="Confirme su contraseña"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full pb-2 mb-4 bg-transparent text-white placeholder-white border-b border-b-white border-transparent focus:outline-none pl-8"
-                    />
-                    <img
-                        src={confirmShowPassword ? "/image_registro/ojo_cerrado.svg" : "/image_registro/ojo_abierto.svg"}
-                        alt={confirmShowPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                        className="absolute right-3 top-11 w-6 h-6 cursor-pointer"
-                        onClick={toggleConfirmPasswordVisibility}
-                    />
+                <h1 className="text-2xl text-white">Contraseña</h1>
+                <div className="relative mb-6">
+                <img
+                    src="/image_registro/Icono_candado.svg"
+                    alt="Candado"
+                    className="absolute top-3 left-2 w-6"
+                />
+                <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Digite su contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full p-3 bg-transparent text-white placeholder-white border-b border-b-white focus:outline-none pl-10"
+                />
+                <img
+                    src={
+                    showPassword
+                        ? "/image_registro/ojo_cerrado.svg"
+                        : "/image_registro/ojo_abierto.svg"
+                    }
+                    alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    className="absolute right-2 top-3 w-6 cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                />
                 </div>
 
+                <h1 className="text-2xl text-white">Confirmar contraseña</h1>
+                <div className="relative mb-6">
+                <img
+                    src="/image_registro/Icono_candado.svg"
+                    alt="Candado"
+                    className="absolute top-3 left-2 w-6"
+                />
+                <input
+                    type={confirmShowPassword ? "text" : "password"}
+                    placeholder="Confirme su contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full p-3 bg-transparent text-white placeholder-white border-b border-b-white focus:outline-none pl-10"
+                />
+                <img
+                    src={
+                    confirmShowPassword
+                        ? "/image_registro/ojo_cerrado.svg"
+                        : "/image_registro/ojo_abierto.svg"
+                    }
+                    alt={confirmShowPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    className="absolute right-2 top-3 w-6 cursor-pointer"
+                    onClick={toggleConfirmPasswordVisibility}
+                />
+                </div>
+
+                {/* Botón */}
                 <button
                     onClick={handleSignUp}
-                    className="bg-white text-[#080829] rounded-[32px] font-bold p-4 ml-[80px] mt-3 w-2/3 text-2xl"
+                    className="bg-white text-[#080829] rounded-[32px] font-bold p-4 mt-3 w-2/3 text-lg lg:text-2xl mx-auto block"
                 >
                     Registrarse
                 </button>
 
+
+                {/* Enlace */}
                 <a href="/sign-in" className="text-white text-lg font-semibold underline flex justify-center mt-4">
-                Iniciar sesión
+                    Iniciar sesión
                 </a>
-
-
             </div>
 
             {/* Componentes de las alertas */}

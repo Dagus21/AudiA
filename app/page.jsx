@@ -17,7 +17,7 @@ export default function Home() {
     if (!user && !userSession) {
         router.push('/sign-in');
     }
-}, [user, userSession, router]);
+  }, [user, userSession, router]);
 
 
   return (
@@ -109,12 +109,12 @@ export default function Home() {
   
     {/* Pie de página */}
     <footer className="w-full bg-[#060828] text-center p-8 mt-12 text-[#eaeaea] text-sm">
-      <p className="mb-2">Team AudIA ®</p>
-      <a href="https://github.com/Dagus21/AudiA" className="flex items-center justify-center space-x-2 mt-2 text-white" aria-label="Visit GitHub">
+      <p className="text-base mb-2">Team AudIA ®</p>
+      <a href="https://github.com/Dagus21/AudiA" className="text-base flex items-center justify-center space-x-2 mt-2 text-white" aria-label="Visit GitHub">
         <img src="image_home/logo-git.png" alt="Logo GitHub"  className="w-8 h-8" />
         GitHub
       </a>
-      <p className="mt-2">Todos los derechos reservados</p>
+      <p className="text-base mt-2">Todos los derechos reservados</p>
     </footer>
   </div>  
   );
