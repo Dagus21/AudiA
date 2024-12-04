@@ -4,7 +4,7 @@ import { auth } from "@/app/firebase/config"
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { useEffect, useState } from 'react';
-import { signIn } from 'next-auth/react';
+
 
 export default function SingInSpotify() {
 
@@ -51,7 +51,10 @@ export default function SingInSpotify() {
                     </a>
                 </li>
                 <li>
-                    <a href="#" className="transition-colors">
+                    <a href="#" className="transition-colors"
+                    onClick={() => {
+                        router.push('/section-spotify');
+                    }}>
                         <img
                             src="/image_spotify/spotify_icon.svg"
                             alt="Spotify"
@@ -60,7 +63,10 @@ export default function SingInSpotify() {
                     </a>
                 </li>
                 <li>
-                    <a href="#" className="transition-colors">
+                    <a className="transition-colors"
+                    onClick={() => {
+                        router.push('/section-IA');
+                    }}>
                         <img
                             src="/image_spotify/nota_icon.svg"
                             alt="Music"
@@ -86,39 +92,27 @@ export default function SingInSpotify() {
     </header>
 
     {/* Contenido Principal */}
-		<main className="mt-24 lg:mt-32 w-full lg:w-[75%] text-center px-4 lg:px-24">
-			<div className="flex flex-col lg:flex-row items-center justify-center pt-24 pb-16 px-4 lg:px-0">
-				{/* Imagen de Spotify */}
-					<div className="mb-8 lg:mb-0 lg:ml-16">
-						<img 
-							src="/image_spotify/spotify_icon_grande.svg" 
-							alt="Spotify" 
-							className="w-48 lg:w-52 mx-auto"  // Ajuste del tamaño de la imagen
-						/>
-					</div>
-
-					{/* Texto de bienvenida */}
-					<div className="flex-1 text-center lg:text-left lg:pl-20">
-						<h2 className="text-white text-xl lg:text-3xl font-bold leading-relaxed">
-								Para escuchar tus Playlist de Spotify debes iniciar sesión
-						</h2>
-					</div>
-				</div>
-
-				
-				{/* Botón de inicio de sesión */}
-				<div className="flex items-center justify-center">
-						<button
-								className="w-3/4 lg:w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100"
-						>
-								<h2 className="text-[#000000] font-extrabold text-2xl lg:text-3xl">
-										Iniciar sesión
-								</h2>
-						</button>
-				</div>
-		</main>
-
-	</div>
+    <main className="mt-20 w-[75%] text-center">
+        <div className="flex items-center justify-center pt-24 pb-16 px-24">
+			<div className="ml-15 mb-20">
+			<img src="/image_spotify/spotify_icon_grande.svg" alt="Spotify"/>
+			</div>
+            <div className="flex-1 text-left ml-20 mb-39">
+                <h2 className="text-white text-3xl font-bold">
+                    Para escuchar tus Playlist de Spotify debes iniciar sesión
+                </h2>
+                <div className="mt-10 ml-20">
+                    <a href="https://accounts.spotify.com/es/login" className="w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100">
+                        <button >
+                            <h2 className="text-[#000000] font-extrabold text-3xl p-8">Iniciar sesión</h2>
+                        </button>
+                    </a>  
+                </div>
+            </div>
+        </div>
+        
+    </main>
+</div>
 
   );
 }

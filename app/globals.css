@@ -24,3 +24,28 @@ body {
 .hover\:filter-white:hover {
   filter: brightness(0) invert(1);
 }
+
+
+/* Estilos para la seccion de IA */
+button {
+  transition: transform 0.1s ease-in-out;
+}
+
+button.clicked {
+  transform: scale(0.95); /* Cuando se hace clic, el botón se reduce un 5%*/ 
+}
+
+button:active {
+  transform: scale(0.9); /* Al mantener presionado el botón, se reduce más */
+}
+
+button:disabled {
+  pointer-events: none; /* Desactiva cualquier evento de puntero (clic, hover, etc.) */
+  opacity: 0.5; /* Opcional: cambia la apariencia del botón deshabilitado */
+}
+
+input:disabled{
+  pointer-events: none; /* Desactiva cualquier evento de puntero (clic, hover, etc.) */
+  opacity: 0.5; /* Opcional: cambia la apariencia del botón deshabilitado */
+}
+
