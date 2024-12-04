@@ -86,26 +86,39 @@ export default function SingInSpotify() {
     </header>
 
     {/* Contenido Principal */}
-    <main className="mt-19 w-[75%] text-center">
-        <div className="flex items-center justify-center pt-24 pb-16 px-24">
-			<div className=" ml-20">
-			<img src="/image_spotify/spotify_icon_grande.svg" alt="Spotify"/>
-			</div>
-            <div className="flex-1 text-right">
-                <h2 className="text-white text-3xl font-bold">
-                    Para escuchar tus Playlist de Spotify debes iniciar sesión
-                </h2>
-            </div>
-        </div>
-        <div className="flex items-center justify-center">
-            <button
-                className="w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100"
-            >
-                <h2 className="text-[#000000] font-extrabold text-3xl">Iniciar sesión</h2>
-            </button>
-        </div>
-    </main>
-</div>
+		<main className="mt-24 lg:mt-32 w-full lg:w-[75%] text-center px-4 lg:px-24">
+			<div className="flex flex-col lg:flex-row items-center justify-center pt-24 pb-16 px-4 lg:px-0">
+				{/* Imagen de Spotify */}
+					<div className="mb-8 lg:mb-0 lg:ml-16">
+						<img 
+							src="/image_spotify/spotify_icon_grande.svg" 
+							alt="Spotify" 
+							className="w-48 lg:w-52 mx-auto"  // Ajuste del tamaño de la imagen
+						/>
+					</div>
+
+					{/* Texto de bienvenida */}
+					<div className="flex-1 text-center lg:text-left lg:pl-20">
+						<h2 className="text-white text-xl lg:text-3xl font-bold leading-relaxed">
+								Para escuchar tus Playlist de Spotify debes iniciar sesión
+						</h2>
+					</div>
+				</div>
+
+				
+				{/* Botón de inicio de sesión */}
+				<div className="flex items-center justify-center">
+						<button
+								className="w-3/4 lg:w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100"
+						>
+								<h2 className="text-[#000000] font-extrabold text-2xl lg:text-3xl">
+										Iniciar sesión
+								</h2>
+						</button>
+				</div>
+		</main>
+
+	</div>
 
   );
 }
