@@ -17,7 +17,7 @@ export default function Home() {
     if (!user && !userSession) {
         router.push('/sign-in');
     }
-}, [user, userSession, router]);
+  }, [user, userSession, router]);
 
 
   return (
@@ -40,7 +40,10 @@ export default function Home() {
             </a>
           </li>
           <li>
-            <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors">
+            <a href="#" className="text-[#c7c7d1] hover:text-white transition-colors"
+            onClick={() => {
+              router.push('/section-IA');
+            }}>
               <img src="/image_home/music.svg" alt="Music" className="w-8 h-8 transition-colors hover:filter-white" />
             </a>
           </li>

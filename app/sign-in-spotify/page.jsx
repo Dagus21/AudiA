@@ -4,7 +4,7 @@ import { auth } from "@/app/firebase/config"
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { useEffect, useState } from 'react';
-import { signIn } from 'next-auth/react';
+
 
 export default function SingInSpotify() {
 
@@ -51,7 +51,10 @@ export default function SingInSpotify() {
                     </a>
                 </li>
                 <li>
-                    <a href="#" className="transition-colors">
+                    <a href="#" className="transition-colors"
+                    onClick={() => {
+                        router.push('/section-spotify');
+                    }}>
                         <img
                             src="/image_spotify/spotify_icon.svg"
                             alt="Spotify"
@@ -60,7 +63,10 @@ export default function SingInSpotify() {
                     </a>
                 </li>
                 <li>
-                    <a href="#" className="transition-colors">
+                    <a className="transition-colors"
+                    onClick={() => {
+                        router.push('/section-IA');
+                    }}>
                         <img
                             src="/image_spotify/nota_icon.svg"
                             alt="Music"
@@ -86,24 +92,25 @@ export default function SingInSpotify() {
     </header>
 
     {/* Contenido Principal */}
-    <main className="mt-19 w-[75%] text-center">
+    <main className="mt-20 w-[75%] text-center">
         <div className="flex items-center justify-center pt-24 pb-16 px-24">
-			<div className=" ml-20">
+			<div className="ml-15 mb-20">
 			<img src="/image_spotify/spotify_icon_grande.svg" alt="Spotify"/>
 			</div>
-            <div className="flex-1 text-right">
+            <div className="flex-1 text-left ml-20 mb-39">
                 <h2 className="text-white text-3xl font-bold">
                     Para escuchar tus Playlist de Spotify debes iniciar sesión
                 </h2>
+                <div className="mt-10 ml-20">
+                    <a href="https://accounts.spotify.com/es/login" className="w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100">
+                        <button >
+                            <h2 className="text-[#000000] font-extrabold text-3xl p-8">Iniciar sesión</h2>
+                        </button>
+                    </a>  
+                </div>
             </div>
         </div>
-        <div className="flex items-center justify-center">
-            <button
-                className="w-2/6 p-3 py-5 bg-white rounded-3xl hover:bg-indigo-100"
-            >
-                <h2 className="text-[#000000] font-extrabold text-3xl">Iniciar sesión</h2>
-            </button>
-        </div>
+        
     </main>
 </div>
 
