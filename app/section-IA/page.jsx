@@ -1020,17 +1020,19 @@ export default function SectionIA() {
           <button
             disabled={isDisabledReiniciar}
             onClick={() => BottomReiniciar()}
-            className="flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-700 transition"
+            className="flex items-center space-x-2 px-6 py-3 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-700 transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-2"
-              fill="currentColor"
+              className="h-5 w-5 text-white"
+              fill="none"
               viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h4v4l-5-5 5-5v4h-4v2z" />
+              <path d="M21 12a9 9 0 11-6.219-8.563M21 3v6h-6" />
             </svg>
-            Reiniciar
+            <span>Reiniciar</span>
           </button>
         </div>
       </div>
@@ -1074,18 +1076,35 @@ export default function SectionIA() {
         <div className="relative">
           <button
             disabled={isDisabledGuardar}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 absolute left-56 bottom-28"
+            className="px-4 py-2 bg-black hover:bg-gray-800 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 absolute left-56 bottom-28 flex items-center space-x-2"
           >
-            {" "}
-            Guardar{" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M17 3H7C5.89 3 5 3.89 5 5v14c0 1.11.89 2 2 2h10c1.11 0 2-.89 2-2V7l-4-4zM12 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3-10H9V5h6v4z" />
+            </svg>
+            <span className="text-white">Guardar</span>
           </button>
           <button
             onClick={() => BottomReiniciarMelodia()}
             disabled={isDisabledReinicarMelodia}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 absolute left-56 bottom-12"
+            className="px-4 py-2 bg-black hover:bg-gray-800 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 absolute left-56 bottom-12 flex items-center space-x-2"
           >
-            {" "}
-            Reiniciar{" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M21 12a9 9 0 11-6.219-8.563M21 3v6h-6" />
+            </svg>
+
+            <span className="text-white">Reiniciar</span>
           </button>
         </div>
 
@@ -1094,23 +1113,33 @@ export default function SectionIA() {
           <button
             onClick={() => GenerarReproducirMelodia()}
             disabled={isDisabledGenerarReproducir}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 absolute w-64"
+            className="flex items-center px-4 py-2 bg-black hover:bg-gray-800 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 absolute w-64 space-x-2"
           >
-            🎵 Generar y reproducir melodía
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 2v4m6.36-1.64L15.5 7.5M22 12h-4m1.64 6.36L16.5 15.5M12 22v-4m-6.36 1.64L8.5 16.5M2 12h4m-1.64-6.36L7.5 8.5" />
+            </svg>
+            <span className="text-white">Generar y reproducir melodía</span>
           </button>
         </div>
 
-        <div className="fixed right-8 bottom-8 bg-gradient-to-b from-[#48494C] to-[#2E2E33] p-4 rounded-lg shadow-lg w-96">
-          <h3 className="text-lg font-semibold text-white mb-4 text-center">
+        <div className="fixed right-8 bottom-8 bg-gradient-to-b from-[#48494C] to-[#2E2E33] p-4 rounded-lg shadow-lg w-96 border border-black">
+          {/* Título */}
+          <h3 className="text-lg font-semibold text-white mb-2 text-left pr-4">
             Mis pistas
           </h3>
-
           {/* Barra de búsqueda */}
           <div className="relative mb-4">
             <input
               type="text"
               placeholder="Buscar"
-              className="w-full bg-transparent text-sm text-white rounded-full py-2 pl-10 pr-4 border border-black focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full bg-transparent text-sm text-white rounded-full py-2 pl-10 pr-4 border-2 border-black focus:outline-none focus:ring-2 focus:ring-black"
             />
             <span className="absolute left-3 top-2.5 text-black">
               <svg
@@ -1129,8 +1158,8 @@ export default function SectionIA() {
 
           {/* Lista de pistas */}
           <div className="space-y-3">
-            {/* Pista 1 con degradado */}
-            <div className="flex items-center justify-between bg-gradient-to-b from-[#48494C] to-[#2E2E33] p-3 rounded-lg">
+            {/* Pista 1 con degradado horizontal */}
+            <div className="relative flex items-center justify-between bg-gradient-to-r from-[#2E2E33] to-[#48494C] p-3 rounded-lg border border-black">
               <div className="flex items-center space-x-3">
                 <div className="p-2">
                   <svg
@@ -1177,8 +1206,8 @@ export default function SectionIA() {
               </div>
             </div>
 
-            {/* Pista 2 con degradado */}
-            <div className="flex items-center justify-between bg-gradient-to-b from-[#48494C] to-[#2E2E33] p-3 rounded-lg">
+            {/* Pista 2 con degradado horizontal */}
+            <div className="relative flex items-center justify-between bg-gradient-to-r from-[#2E2E33] to-[#48494C] p-3 rounded-lg border border-black">
               <div className="flex items-center space-x-3">
                 <div className="p-2">
                   <svg
