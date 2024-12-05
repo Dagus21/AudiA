@@ -104,128 +104,128 @@ const SignIn = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0E0037] via-[#230C4D] to-[#3A1864]">
       <div
-  className="lg:px-20 px-10 py-10 flex flex-col lg:flex-row items-center justify-center space-y-10 lg:space-y-0 lg:space-x-10"
->
-  {/* Sección izquierda */}
-  <div
-    className="bg-gradient-to-b from-[#12033D] via-[#0E4157] to-[#09A381] rounded-lg shadow-xl p-5 
-               w-full lg:w-1/2 flex flex-col items-center"
-  >
-    <div className="flex items-center justify-center">
-      <img src="/img/ia-sing-up.svg" alt="ImagenLogin" className="lg:w-9/12 w-11/12" />
-    </div>
-    <h1 className="text-white text-3xl font-semibold pt-5 mb-3 text-center">
-      ¡Bienvenido!
-    </h1>
-    <h2 className="text-white px-5 lg:px-20 mb-5 font-semibold text-center">
-      Accede a tu biblioteca de música y disfruta de tus canciones y playlists
-      favoritas en un solo lugar. Conéctate con tu cuenta de Spotify y comienza
-      a escuchar. ¡La música te espera!
-    </h2>
-  </div>
-
-  {/* Sección derecha */}
-  <div
-    className="py-16 px-8 sm:px-10 lg:px-24 rounded-lg w-full lg:w-1/2 bg-transparent flex flex-col"
-  >
-    <div className="flex items-center justify-center">
-      <img src="/img/logo_audia.svg" alt="logo" className="w-3/4" />
-    </div>
-
-    <h2 className="text-white text-lg mt-5">Correo Electrónico</h2>
-    <div className="flex items-center border-b-2 border-white h-auto">
-      <img src="/img/icono_mail.svg" alt="Mail" className="w-6 h-6" />
-      <input
-        type="email"
-        placeholder="Digite su correo electrónico"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-3 bg-transparent text-white placeholder-white outline-none"
-      />
-    </div>
-
-    <h2 className="text-white text-lg mt-5">Contraseña</h2>
-    <div className="flex items-center border-b-2 border-white h-auto">
-      <img src="/img/candado.svg" alt="Candado" className="w-6 h-6" />
-      <input
-        type={showPassword ? "text" : "password"}
-        placeholder="Digite su contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full p-3 bg-transparent text-white placeholder-white outline-none"
-      />
-      <button
-        onClick={togglePasswordVisibility}
-        className="w-6 h-6 flex items-center justify-center"
+        className="lg:px-20 px-10 py-10 flex flex-col lg:flex-row items-center justify-center space-y-10 lg:space-y-0 lg:space-x-10"
       >
-        <img
-          src={
-            showPassword
-              ? "/img/eye-closed.svg"
-              : "/img/eye-open.svg"
-          }
-          alt="Toggle Contraseña"
-        />
-      </button>
-    </div>
-
-    {/* Enlaces */}
-    <div className="flex flex-col items-center text-center pt-5 space-y-2">
-      <a
-        href="/sign-up"
-        className="text-white text-lg font-semibold underline"
-      >
-        ¿Aún no estás registrado?
-      </a>
-
-      <div className="relative">
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            setMostrarAlertaContra(true);
-          }}
-          className="text-white text-lg font-semibold underline"
+        {/* Sección izquierda */}
+        <div
+          className="bg-gradient-to-b from-[#12033D] via-[#0E4157] to-[#09A381] rounded-lg shadow-xl p-5 
+                    w-full lg:w-1/2 flex flex-col items-center"
         >
-          ¿Olvidaste tu contraseña?
-        </a>
-        {mostrarAlertaContra && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-            <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
+          <div className="flex items-center justify-center">
+            <img src="/img/ia-sing-up.svg" alt="ImagenLogin" className="lg:w-9/12 w-11/12" />
           </div>
-        )}
-      </div>
+          <h1 className="text-white text-3xl font-semibold pt-5 mb-3 text-center">
+            ¡Bienvenido!
+          </h1>
+          <h2 className="text-white px-5 lg:px-20 mb-5 font-semibold text-center">
+            Accede a tu biblioteca de música y disfruta de tus canciones y playlists
+            favoritas en un solo lugar. Conéctate con tu cuenta de Spotify y comienza
+            a escuchar. ¡La música te espera!
+          </h2>
+        </div>
 
-      <div className="relative">
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            setMostrarAlertaCorreo(true);
-          }}
-          className="text-white text-lg font-semibold underline"
+        {/* Sección derecha */}
+        <div
+          className="py-16 px-8 sm:px-10 lg:px-24 rounded-lg w-full lg:w-1/2 bg-transparent flex flex-col"
         >
-          Restablecer correo electrónico
-        </a>
-        {mostrarAlertaCorreo && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-            <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
+          <div className="flex items-center justify-center">
+            <img src="/img/logo_audia.svg" alt="logo" className="w-3/4" />
           </div>
-        )}
-      </div>
-    </div>
 
-    {/* Botón Iniciar Sesión */}
-    <div className="flex items-center justify-center pt-5">
-      <button
-        onClick={handleSignIn}
-        className="w-3/6 p-3 bg-white rounded-3xl hover:bg-indigo-100"
-      >
-        <h2 className="text-[#2A2C7D] font-extrabold">Iniciar sesión</h2>
-      </button>
-    </div>
-  </div>
-</div>
+          <h2 className="text-white text-lg mt-5">Correo Electrónico</h2>
+          <div className="flex items-center border-b-2 border-white h-auto">
+            <img src="/img/icono_mail.svg" alt="Mail" className="w-6 h-6" />
+            <input
+              type="email"
+              placeholder="Digite su correo electrónico"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 bg-transparent text-white placeholder-white outline-none"
+            />
+          </div>
+
+          <h2 className="text-white text-lg mt-5">Contraseña</h2>
+          <div className="flex items-center border-b-2 border-white h-auto">
+            <img src="/img/candado.svg" alt="Candado" className="w-6 h-6" />
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Digite su contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 bg-transparent text-white placeholder-white outline-none"
+            />
+            <button
+              onClick={togglePasswordVisibility}
+              className="w-6 h-6 flex items-center justify-center"
+            >
+              <img
+                src={
+                  showPassword
+                    ? "/img/eye-closed.svg"
+                    : "/img/eye-open.svg"
+                }
+                alt="Toggle Contraseña"
+              />
+            </button>
+          </div>
+
+          {/* Enlaces */}
+          <div className="flex flex-col items-center text-center pt-5 space-y-2">
+            <a
+              href="/sign-up"
+              className="text-white text-lg font-semibold underline"
+            >
+              ¿Aún no estás registrado?
+            </a>
+
+            <div className="relative">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMostrarAlertaContra(true);
+                }}
+                className="text-white text-lg font-semibold underline"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
+              {mostrarAlertaContra && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+                  <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMostrarAlertaCorreo(true);
+                }}
+                className="text-white text-lg font-semibold underline"
+              >
+                Restablecer correo electrónico
+              </a>
+              {mostrarAlertaCorreo && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+                  <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Botón Iniciar Sesión */}
+          <div className="flex items-center justify-center pt-5">
+            <button
+              onClick={handleSignIn}
+              className="w-3/6 p-3 bg-white rounded-3xl hover:bg-indigo-100"
+            >
+              <h2 className="text-[#2A2C7D] font-extrabold">Iniciar sesión</h2>
+            </button>
+          </div>
+        </div>
+      </div>
 
 
       {/* Componentes de las alertas */}

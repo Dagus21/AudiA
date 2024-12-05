@@ -30,15 +30,16 @@ const RestablecerCorreo = ({ setMostrarAlertaCorreo }) => {
   };
 
   return (
-    <div className="relative bg-white text-black p-6 rounded-lg shadow-xl text-center w-1/4"> 
+    <div className="relative bg-white text-black p-6 rounded-lg shadow-xl text-center mx-4 w-full sm:w-3/4 md:w-1/2 lg:w-1/4">
       <button 
         onClick={handleClose} 
-        className="absolute top-2 right-2 text-gray-600 hover:text-gray-950 text-2xl"
+        className="absolute top-2 right-2 text-gray-600 hover:text-gray-950 text-4xl lg:text-2xl"
       >
         &times;
       </button>
-      <h1 className="text-3xl font-bold">Restablecer Correo</h1>
       
+      <h1 className="text-2xl sm:text-3xl font-bold">Restablecer Correo</h1>
+
       {/* Campo para Correo Actual */}
       <h3 className="text-xl font-semibold mt-2">Correo Actual</h3>
       <div className='flex items-center justify-center border-b-2 border-black h-auto'>
@@ -50,7 +51,7 @@ const RestablecerCorreo = ({ setMostrarAlertaCorreo }) => {
           className="w-full p-3 bg-transparent rounded outline-none text-black placeholder-gray-500"
         />
       </div>
-      
+
       {/* Campo para Correo Nuevo */}
       <h3 className="text-xl font-semibold mt-2">Correo Nuevo</h3>
       <div className='flex items-center justify-center border-b-2 border-black h-auto'>
@@ -62,13 +63,13 @@ const RestablecerCorreo = ({ setMostrarAlertaCorreo }) => {
           className="w-full p-3 bg-transparent rounded outline-none text-black placeholder-gray-500"
         />
       </div>
-      
+
       <p className="text-base font-semibold mt-2">Cuando presiones el botón Enviar se enviará un correo para confirmar el cambio.</p>
-      
+
       <div className="flex items-center justify-center pt-5">
         <button
           onClick={handleSignIn}
-          className="w-3/6 p-3 bg-[#1C1F57] rounded-3xl hover:bg-[#34376C]"
+          className="w-3/4 sm:w-1/2 p-3 bg-[#1C1F57] rounded-3xl hover:bg-[#34376C]"
         >
           <h2 className="text-white font-semibold">Enviar</h2>
         </button>

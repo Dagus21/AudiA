@@ -26,28 +26,28 @@ const OlvidoPassword = ({ setMostrarAlertaContra }) => {
   };
 
   return (
-    <div className="relative bg-white text-black p-6 rounded-lg shadow-xl text-center w-1/4"> 
+    <div className="relative bg-white text-black p-6 rounded-lg shadow-xl text-center mx-4 w-full sm:w-3/4 md:w-1/2 lg:w-1/4">
       <button 
         onClick={handleClose} 
-        className="absolute top-2 right-2 text-gray-600 hover:text-gray-950 text-2xl"
+        className="absolute top-2 right-2 text-gray-600 hover:text-gray-950 text-4xl lg:text-2xl"
       >
         &times;
       </button>
-      <h1 className="text-3xl font-bold">Ingresa tu Correo</h1>
-      <h2 className="font-bold mt-2">Una vez presiones Enviar, se te mandará un correo para restablecer una contraseña</h2>
-      <div className='flex items-center justify-center border-b-2 border-black h-auto'>
+      <h1 className="text-2xl sm:text-3xl font-bold">Ingresa tu Correo</h1>
+      <h2 className="font-bold mt-2 text-sm sm:text-base">Una vez presiones Enviar, se te mandará un correo para restablecer una contraseña</h2>
+      <div className="flex items-center justify-center border-b-2 border-black h-auto">
         <input
           type="email"
           placeholder="Digite su correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 bg-transparent rounded outline-none text-black placeholder-white"
+          className="w-full p-3 bg-transparent rounded outline-none text-black placeholder-gray-400"
         />
       </div>
       <div className="flex items-center justify-center pt-5">
         <button
           onClick={handleSignIn}
-          className="w-3/6 p-3 bg-[#1C1F57] rounded-3xl hover:bg-[#34376C]"
+          className="w-3/4 sm:w-1/2 p-3 bg-[#1C1F57] rounded-3xl hover:bg-[#34376C]"
         >
           <h2 className="text-white font-semibold">Enviar</h2>
         </button>
