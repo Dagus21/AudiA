@@ -7,9 +7,17 @@ import { signOut } from 'firebase/auth';
 import ValidacionCamposVacios from '@/components/AlertasIA/camposVacios';
 import ValidacionCamposFormato from '@/components/AlertasIA/camposFormato';
 import ValidacionCamposExtension from '@/components/AlertasIA/camposExtension';
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 
 
 export default function SectionIA() {
+
+  // Estado para almacenar la melodía generada
+  const [generatedMelody, setGeneratedMelody] = useState(null);
+  
+
+  const db = getFirestore(); // Inicializa Firestore
+
 
   // variables para las alertas
   const [mostrarValidacionCamposVacios, setMostrarValidacionCamposVacios] = useState(false);
@@ -42,73 +50,38 @@ export default function SectionIA() {
   const [isAdding, setIsAdding] = useState(true); // Controla si estamos añadiendo notas
 
   // Variables para los botones de la seccion derecha
-
   const [isDisabledGrabar, setIsDisabledGrabar] = useState(false); // Estado para el botón
-  const toggleButtonGrabar = () => {
-    setIsDisabledGrabar(!isDisabledGrabar); // Cambia el estado entre habilitado y deshabilitado
-  };
-
   const [isDisabledFinalizar, setIsDisabledFinalizar] = useState(true); // Estado para el botón
-  const toggleButtonFinalizar = () => {
-    setIsDisabledFinalizar(!isDisabledFinalizar); // Cambia el estado entre habilitado y deshabilitado
-  };
-  
   const [isDisabledReproducir, setIsDisabledReproducir] = useState(true); // Estado para el botón
-  const toggleButtonReproducir = () => {
-    setIsDisabledReproducir(!isDisabledReproducir); // Cambia el estado entre habilitado y deshabilitado
-  };
-
   const [isDisabledReiniciar, setIsDisabledReiniciar] = useState(true); // Estado para el botón
-  const toggleButtonReiniciar = () => {
-    setIsDisabledReiniciar(!isDisabledReiniciar); // Cambia el estado entre habilitado y deshabilitado
-  };
-
   const [isDisabledPiano, setIsDisabledPiano] = useState(true); // Estado para el botón
-  const toggleButtonPiano = () => {
-    setIsDisabledPiano(!isDisabledPiano); // Cambia el estado entre habilitado y deshabilitado
-  };
+  const [isDisabledNombre, setIsDisabledNombre] = useState(true); // Estado para el botón
 
   // variables para manejar los estados de los campos de la seccion de IA
-
   const [inputValueIndice, setInputValueIndice] = useState('');
   const [inputValuePasos, setInputValuePasos] = useState('');
+  const [inputValueNombre, setInputValueNombre] = useState('');
 
   // Función que se ejecuta al cambiar el valor del campo de texto
   const handleInputIndiceChange = (event) => {
     setInputValueIndice(event.target.value); // Actualiza el estado con el nuevo valor
   };
-
   const handleInputPasosChange = (event) => {
     setInputValuePasos(event.target.value); // Actualiza el estado con el nuevo valor
   };
+  const handleInputNombreChange = (event) => {
+    setInputValueNombre(event.target.value); // Actualiza el estado con el nuevo valor
+  };
+
 
   // variables y funciones para manejar el estado habilitado de la seccion de IA
-
   const [isDisabledGenerarReproducir, setIsDisabledGenerarReproducir] = useState(true); // Estado para el botón
-  const toggleButtonGenerarReproducir = () => {
-    setIsDisabledGenerarReproducir(!isDisabledGenerarReproducir); // Cambia el estado entre habilitado y deshabilitado
-  };
-
   const [isDisabledReinicarMelodia, setIsDisabledReinicarMelodia] = useState(true); // Estado para el botón
-  const toggleButtonReinicarMelodia = () => {
-    setIsDisabledReinicarMelodia(!isDisabledReinicarMelodia); // Cambia el estado entre habilitado y deshabilitado
-  };
-
-
   const [isDisabledGuardar, setIsDisabledGuardar] = useState(true); // Estado para el botón
-  const toggleButtonGuardar = () => {
-    setIsDisabledGuardar(!isDisabledGuardar); // Cambia el estado entre habilitado y deshabilitado
-  };
-
   const [isDisabledIndice, setIsDisabledIndice] = useState(true); // Estado para el botón
-  const toggleImputIndice = () => {
-    setIsDisabledIndice(!isDisabledIndice); // Cambia el estado entre habilitado y deshabilitado
-  };
-
   const [isDisabledPasos, setIsDisabledPasos] = useState(true); // Estado para el botón
-  const toggleImputPasos = () => {
-    setIsDisabledPasos(!isDisabledPasos); // Cambia el estado entre habilitado y deshabilitado
-  };
+  const [isDisabledResetear, setIsDisabledResetear] = useState(true); // Estado para el botón
+  
 
 
 
@@ -117,12 +90,13 @@ export default function SectionIA() {
 
 
 
-//   useEffect(() => {
-//     if (!user && !userSession) {
-//       router.push('/sign-in');
-//     }
 
-//   }, [user, userSession, router]);
+  // useEffect(() => {
+  //   if (!user && !userSession) {
+  //     router.push('/sign-in');
+  //   }
+
+  // }, [user, userSession, router]);
 
 
 
@@ -171,10 +145,7 @@ useEffect(() => {
   }, [mmLoaded]); // Este efecto se ejecuta cuando mmLoaded se vuelve true
 
 
-
-
 let isPlaying = false; // Estado para evitar reproducciones concurrentes
-
 const playSingleNote = async (note) => {
   if (!isModelLoaded || !player) {
     console.log("El modelo aún no está cargado o player no está definido.");
@@ -182,11 +153,12 @@ const playSingleNote = async (note) => {
   }
 
   if (isPlaying) {
-    console.log("El reproductor está ocupado. Espera a que termine la nota actual.");
-    return; // Salir si ya se está reproduciendo algo
+    console.log("Otra nota se está reproduciendo, los botones están deshabilitados.");
+    return; // Salir si ya hay una nota reproduciéndose
   }
 
-  isPlaying = true; // Marcar el reproductor como ocupado
+  isPlaying = true; // Marcar como reproduciendo
+  setIsDisabledPiano(true); // Deshabilitar los botones del piano
 
   const noteSequence = {
     notes: [
@@ -200,10 +172,10 @@ const playSingleNote = async (note) => {
   } catch (error) {
     console.log("Error al reproducir la nota:", error);
   } finally {
-    isPlaying = false; // Liberar el estado del reproductor
+    isPlaying = false; // Marcar como no reproduciendo
+    setIsDisabledPiano(false); // Habilitar los botones del piano
   }
 };
-
 
 
 
@@ -238,33 +210,32 @@ const playSingleNote = async (note) => {
   // Función para finalizar
   const finishAdding = () => {
     setIsAdding(false);
-    toggleButtonReproducir();
-    toggleButtonFinalizar();
-    toggleButtonPiano();
+    setIsDisabledReproducir(false);
+    setIsDisabledFinalizar(true);
+    setIsDisabledPiano(true);
     console.log("JSON final:", twinkleTwinkle);
   };
 
   // funciones de los botones de la seccion derecha
 
   const ClickBottonGrabar = () =>{
-    toggleButtonPiano();
-    toggleButtonGrabar();
-    toggleButtonFinalizar();
+    setIsDisabledPiano(false);
+    setIsDisabledGrabar(true);
+    setIsDisabledFinalizar(false);
   }
 
   // funcion del boton reproducir
 
   const BottomReproducir = async () => {
-    if(!isDisabledPiano){
-      toggleButtonPiano();
-    }
+    setIsDisabledPiano(true);
     player.start(twinkleTwinkle); // Reproduce la secuencia de notas
-    toggleButtonReproducir();
-    toggleButtonReiniciar();
+    setIsDisabledReproducir(true);
+    setIsDisabledReiniciar(false);
     // habilitar campos de la seccion IA
-    toggleButtonGenerarReproducir();
-    toggleImputIndice();
-    toggleImputPasos();
+    setIsDisabledGenerarReproducir(false);
+    setIsDisabledIndice(false);
+    setIsDisabledPasos(false);
+    setIsDisabledNombre(false);
   };
 
   const BottomReiniciar = async () => {
@@ -277,19 +248,25 @@ const playSingleNote = async (note) => {
     setStartTime(0);
     // habilitar `isAdding` 
     setIsAdding(true); 
-    // Cambio en los estados de los botones 
-    toggleButtonGrabar(); // Habilitar grabar
-    toggleButtonReiniciar(); // Deshabilitar reiniciar
+    // Cambio en los estados de los botones
+    setIsDisabledGrabar(false);  // Habilitar grabar
+    setIsDisabledReiniciar(true); // Deshabilitar reiniciar
     // desabilitar campos de IA
-    toggleButtonGenerarReproducir();
-    toggleImputIndice();
-    toggleImputPasos();
+    setIsDisabledGenerarReproducir(true);
+    setIsDisabledIndice(true);
+    setIsDisabledPasos(true);
+    setIsDisabledNombre(true);
   };
 
   const validacionesGenerarMusicaIA = () => {
-    if (inputValueIndice.length === 0 || inputValuePasos.length === 0) {
+    if (inputValueIndice.length === 0 || inputValuePasos.length === 0 || inputValueNombre.length == 0) {
       setMostrarValidacionCamposVacios(true);
       throw new Error("Campos vacíos");
+    }
+
+    if(inputValueNombre.length > 20){
+      setMostrarValidacionCamposExtension(true);
+      throw new Error("Datos de nombre fuera del rango aceptado");
     }
   
     if (Number(inputValueIndice) < 0.0 || Number(inputValueIndice) > 2.0) {
@@ -317,12 +294,10 @@ const playSingleNote = async (note) => {
       throw new Error("El formato del campo indice no acepta comas");
     }
   };
+  
 
   const GenerarReproducirMelodia = async () => {
-    if(!isDisabledReiniciar){
-      toggleButtonReiniciar();
-    }
-    
+    setIsDisabledReiniciar(true);
     try {
       // Asegúrate de esperar las validaciones
       validacionesGenerarMusicaIA();
@@ -346,34 +321,139 @@ const playSingleNote = async (note) => {
   
       const player = new mm.Player();
       player.start(generatedSequence);
-  
+
+
+      // Guardar la melodía y la duración calculada en los estados
+      setGeneratedMelody(generatedSequence);
+
       // limpiar el modelo
       model.dispose();
       // cambiar estados de los botones y campos
-      toggleButtonGenerarReproducir();
-      toggleButtonGuardar();
-      toggleButtonReinicarMelodia();
-      toggleImputIndice();
-      toggleImputPasos();
+      setIsDisabledGenerarReproducir(true);
+      setIsDisabledGuardar(false);
+      setIsDisabledReinicarMelodia(false);
+      setIsDisabledIndice(true);
+      setIsDisabledPasos(true);
+      setIsDisabledNombre(true);
+      setIsDisabledResetear(false);
     } catch (e) {
       console.log("Error en el flujo:", e);
     }
   };
 
+  
   const BottomReiniciarMelodia = async () => {
     // cambiar estado de los botones y campos
-    if(isDisabledIndice){
-      toggleImputIndice();
-    }
-    if(isDisabledPasos){
-      toggleImputPasos();
-    }
-    toggleButtonGenerarReproducir();
+    setIsDisabledIndice(false);
+    setIsDisabledPasos(false);
+    setIsDisabledNombre(false);
+    setIsDisabledGenerarReproducir(false);
     setInputValueIndice('');
     setInputValuePasos('');
-    toggleButtonReinicarMelodia();
-    toggleButtonGuardar();
+    setInputValueNombre('');
+    setIsDisabledReinicarMelodia(true);
+    setIsDisabledGuardar(true);
+    setIsDisabledResetear(true);
   };
+
+  const BottomResetear = async () => {
+    // cambiar estado de los botones y campos
+    setIsDisabledIndice(true);
+    setIsDisabledPasos(true);
+    setIsDisabledNombre(true);
+    setIsDisabledGenerarReproducir(true);
+    setIsDisabledGuardar(true);
+    setIsDisabledReinicarMelodia(true);
+    setIsDisabledGrabar(false);
+    setIsDisabledResetear(true);
+    setInputValueIndice('');
+    setInputValuePasos('');
+    setInputValueNombre('');
+    // vaciar el json de reproducir las notas
+    setTwinkleTwinkle({
+      notes: [],
+      totalTime: 0,
+    });
+     // Reiniciar `startTime` al valor inicial
+     setStartTime(0);
+     // habilitar `isAdding` 
+     setIsAdding(true); 
+  };
+
+  const BottomGuardarMelodia = async () => {
+    const userId = user.uid; // Asegúrate de obtener el UID del usuario autenticado
+    
+    if (!userId) {
+      console.error("No se puede guardar la melodía sin un usuario autenticado.");
+      return;
+    }
+  
+    if (!generatedMelody) {
+      console.error("No hay una melodía generada para guardar.");
+      return;
+    }
+  
+    try {
+
+      // Convertir `generatedMelody` a un objeto serializable
+      const serializedMelody = JSON.parse(JSON.stringify(generatedMelody));
+      // Extraer los valores necesarios de serializedMelody
+      const totalQuantizedSteps = Number(serializedMelody.totalQuantizedSteps); // Total de pasos
+      const stepsPerQuarter = Number(serializedMelody.quantizationInfo.stepsPerQuarter); // Pasos por cuarto de nota
+      const qpm = Number(serializedMelody.tempos[0].qpm); // Cuartos de nota por minuto (tempo)
+      // Calcular la duración en segundos
+      const durationInSeconds = (totalQuantizedSteps / stepsPerQuarter) * (60 / qpm);
+    
+      // Guardar datos en la base de datos
+      const melodyData = {
+        name: inputValueNombre,
+        duration: durationInSeconds,
+        melody: serializedMelody, // Melodía serializada
+        createdAt: new Date().toISOString(), // Fecha de creación
+      };
+  
+      // Agregar la melodía a la colección del usuario
+      await addDoc(collection(db, `users/${userId}/melodies`), melodyData);
+  
+      console.log("Melodía guardada exitosamente.");
+      setIsDisabledGuardar(true); // Deshabilitar el botón después de guardar
+    } catch (error) {
+      console.error("Error al guardar la melodía:", error);
+    }
+  };
+
+  const ConsultarCanciones = async () => {
+    const userId = user.uid; // Asegúrate de obtener el UID del usuario autenticado
+  
+    if (!userId) {
+      console.error("No se puede consultar las canciones sin un usuario autenticado.");
+      return;
+    }
+  
+    try {
+      // Referencia a la colección de melodías del usuario
+      const melodiesCollectionRef = collection(db, `users/${userId}/melodies`);
+      const querySnapshot = await getDocs(melodiesCollectionRef);
+  
+      if (querySnapshot.empty) {
+        console.log("No se encontraron canciones guardadas.");
+        return;
+      }
+  
+      // Recorrer los documentos y obtener las melodías
+      const melodies = querySnapshot.docs.map((doc) => ({
+        id: doc.id, // ID del documento
+        ...doc.data(), // Datos del documento
+      }));
+  
+      console.log("Melodías guardadas:", melodies);
+
+    } catch (error) {
+      console.error("Error al consultar las canciones:", error);
+    }
+  };
+  
+  
 
 
   
@@ -648,7 +728,7 @@ const playSingleNote = async (note) => {
 
      {/* Seccion de funciones con IA */}
 
-     <div className=" text-white max-w-sm mx-auto absolute left-8 bottom-20">
+     <div className=" text-white max-w-sm mx-auto absolute left-8 bottom-6">
         <h3 className="text-center text-lg font-semibold mb-4">Funciones con IA</h3>
         
         {/* Input para Índice de aleatoriedad */}
@@ -663,20 +743,33 @@ const playSingleNote = async (note) => {
           <input disabled={isDisabledPasos} value={inputValuePasos} onChange={handleInputPasosChange} placeholder="30" className="w-full bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
         </div>
 
+        {/* Input nombre de la cancion */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-1">Nombre de la cancion(maximo 50 caracteres)</label>
+          <input disabled={isDisabledNombre} value={inputValueNombre} onChange={handleInputNombreChange} placeholder="30" className="w-full bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
         {/* Botones para Guardar y Reiniciar */}
         <div className="relative">
-          <button disabled={isDisabledGuardar} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 absolute left-56 bottom-28"> Guardar </button>
-          <button onClick={() => BottomReiniciarMelodia()} disabled={isDisabledReinicarMelodia} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 absolute left-56 bottom-12"> Reiniciar </button>
+          <button onClick={() => BottomGuardarMelodia()} disabled={isDisabledGuardar} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 absolute -right-56 bottom-28"> Guardar </button>
+          <button onClick={() => BottomReiniciarMelodia()} disabled={isDisabledReinicarMelodia} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 absolute left-96 bottom-10"> Reiniciar seccion </button>
+          <button onClick={() => BottomResetear()} disabled={isDisabledResetear} className="px-4 py-2 bg-slate-900 hover:bg-slate-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 absolute -right-32 bottom-28"> Resetear </button>
         </div>
 
 
         {/* Botones para Generar y Reproducir melodía */}
         <div className="relative">
-          <button onClick={() => GenerarReproducirMelodia()} disabled={isDisabledGenerarReproducir} className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 absolute w-64">
+          <button onClick={() => GenerarReproducirMelodia()} disabled={isDisabledGenerarReproducir} className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 absolute w-52 left-80 bottom-40">
             🎵 Generar y reproducir melodía
           </button>
-          
         </div>
+
+        {/* Boton para consultar las melodias
+        <div className="relative">
+          <button onClick={() => ConsultarCanciones()} className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 absolute w-52 -right-full bottom-0">
+            🎵 consultar
+          </button>
+        </div> */}
 
       </div>
 
