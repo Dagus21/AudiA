@@ -142,9 +142,10 @@ useEffect(() => {
 
 
 // busqueda de canciones
-const filteredTracks = tracks.filter(track =>
-  track.name.toLowerCase().includes(search.toLowerCase())
+const filteredTracks = tracks.filter(track => 
+  track && track.name && track.name.toLowerCase().includes(search.toLowerCase())
 );
+
 
 
 // Cargar el script de Magenta cuando la página se renderice
@@ -276,16 +277,29 @@ const playSingleNote = async (note) => {
   // funcion del boton reproducir
 
   const BottomReproducir = async () => {
-    setIsDisabledPiano(true);
-    player.start(twinkleTwinkle); // Reproduce la secuencia de notas
-    setIsDisabledReproducir(true);
-    setIsDisabledReiniciar(false);
-    // habilitar campos de la seccion IA
-    setIsDisabledGenerarReproducir(false);
-    setIsDisabledIndice(false);
-    setIsDisabledPasos(false);
-    setIsDisabledNombre(false);
+    if (twinkleTwinkle.notes.length === 0 && twinkleTwinkle.totalTime === 0) {
+      // Si el objeto está vacío, solo habilitar el botón reiniciar
+      setIsDisabledReiniciar(false);
+      setIsDisabledPiano(true); // O cualquier otro estado que desees
+      setIsDisabledReproducir(true);
+      setIsDisabledGenerarReproducir(true);
+      setIsDisabledIndice(true);
+      setIsDisabledPasos(true);
+      setIsDisabledNombre(true);
+    } else {
+      // Si el objeto no está vacío, ejecutar el resto del código
+      setIsDisabledPiano(true);
+      player.start(twinkleTwinkle); // Reproduce la secuencia de notas
+      setIsDisabledReproducir(true);
+      setIsDisabledReiniciar(false);
+      // habilitar campos de la sección IA
+      setIsDisabledGenerarReproducir(false);
+      setIsDisabledIndice(false);
+      setIsDisabledPasos(false);
+      setIsDisabledNombre(false);
+    }
   };
+  
 
   const BottomReiniciar = async () => {
     // Vaciar el JSON
