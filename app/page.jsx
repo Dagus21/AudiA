@@ -89,10 +89,10 @@ export default function Home() {
             alt="Icono 1" 
             className="w-24 h-24 rounded-full mr-4 object-cover" 
           />
-          <a href="https://www.youtube.com/watch?v=NWy_IEcmqjo&ab_channel=Christian" className="text-lg text-[#eaeaea]">Machine Learning Piano Progressions with Magenta's Performance RNN </a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=NWy_IEcmqjo&ab_channel=Christian" className="text-lg text-[#eaeaea]">Machine Learning Piano Progressions with Magenta's Performance RNN </a>
         </div>
         <div className="track flex items-center justify-center mb-8">
-          <a href= "https://www.youtube.com/watch?v=JVf6esaXeLE&ab_channel=FoobaruAI "className="text-lg text-[#eaeaea] mr-4">Performance RNN - TensorFlow / Magenta</a>
+          <a target="_blank" href= "https://www.youtube.com/watch?v=JVf6esaXeLE&ab_channel=FoobaruAI "className="text-lg text-[#eaeaea] mr-4">Performance RNN - TensorFlow / Magenta</a>
           <img
             src="image_home/imagen-cancion2.jpg"
             alt="Icono 2"
@@ -105,7 +105,7 @@ export default function Home() {
             alt="Icono 3"
             className="w-24 h-24 rounded-full mr-4 object-cover"
           />
-          <a href="https://www.youtube.com/watch?v=C065_AhBQEg" className="text-lg text-[#eaeaea]">Generating Music with Expressive Timing and Dynamics - Magenta PerformanceRNN</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=C065_AhBQEg" className="text-lg text-[#eaeaea]">Generating Music with Expressive Timing and Dynamics - Magenta PerformanceRNN</a>
         </div>
       </section>
     </main>
@@ -113,7 +113,7 @@ export default function Home() {
     {/* Pie de página */}
     <footer className="w-full bg-[#060828] text-center p-8 mt-12 text-[#eaeaea] text-sm">
       <p className="mb-2">Team AudIA ®</p>
-      <a href="https://github.com/Dagus21/AudiA" className="flex items-center justify-center space-x-2 mt-2 text-white" aria-label="Visit GitHub">
+      <a target="_blank" href="https://github.com/Dagus21/AudiA" className="flex items-center justify-center space-x-2 mt-2 text-white" aria-label="Visit GitHub">
         <img src="image_home/logo-git.png" alt="Logo GitHub"  className="w-8 h-8" />
         GitHub
       </a>

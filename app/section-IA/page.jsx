@@ -7,7 +7,10 @@ import { signOut } from 'firebase/auth';
 import ValidacionCamposVacios from '@/components/AlertasIA/camposVacios';
 import ValidacionCamposFormato from '@/components/AlertasIA/camposFormato';
 import ValidacionCamposExtension from '@/components/AlertasIA/camposExtension';
-import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+import ValidacionCancionRepetida from '@/components/AlertasIA/cancionRepetida';
+import CancionEliminadaExitoso from '@/components/AlertasIA/cancionEliminada';
+import CancionGuardadaExitoso from '@/components/AlertasIA/cancionGuardada';
+import { query ,where ,getFirestore, collection, addDoc, getDocs , deleteDoc , doc} from "firebase/firestore";
 
 
 export default function SectionIA() {
@@ -23,6 +26,9 @@ export default function SectionIA() {
   const [mostrarValidacionCamposVacios, setMostrarValidacionCamposVacios] = useState(false);
   const [mostrarValidacionCamposFormato, setMostrarValidacionCamposFormato] = useState(false);
   const [mostrarValidacionCamposExtension, setMostrarValidacionCamposExtension] = useState(false);
+  const [mostrarValidacionCancionRepetida, setMostrarValidacionCancionRepetida] = useState(false);
+  const [mostrarCancionEliminadaExitoso, setMostrarCancionEliminadaExitoso] = useState(false);
+  const [mostrarCancionGuardadaExitoso, setMostrarCancionGuardadaExitoso] = useState(false);
 
   // variables para la sesion
   const [user] = useAuthState(auth);
@@ -81,23 +87,64 @@ export default function SectionIA() {
   const [isDisabledIndice, setIsDisabledIndice] = useState(true); // Estado para el botón
   const [isDisabledPasos, setIsDisabledPasos] = useState(true); // Estado para el botón
   const [isDisabledResetear, setIsDisabledResetear] = useState(true); // Estado para el botón
+  const [isDisabledReproducirUsuario, setIsDisabledReproducirUsuario] = useState(true); // Estado para el botón
+  const [isDisabledEliminar, setIsDisabledEliminar] = useState(true); // Estado para el botón
+  const [isDisabledReproducirPlaylist, setIsDisabledReproducirPlaylist] = useState(false); // Estado para el botón
+  const [isDisabledReiniciarFlujo, setIsDisabledReiniciarFlujo] = useState(true); // Estado para el botón
+  const [isDisabledRecargar, setIsDisabledRecargar] = useState(true); // Estado para el botón
+
+  // Estado global en tu componente principal
+  const [isPlayingSong, setIsPlayingSong] = useState(true);  
+
+useEffect(() => {
+  if (!user && !userSession) {
+    router.push('/sign-in');
+  }
+
+}, [user, userSession, router]);
+
   
+// variables para la seccion de canciones del usuario
+const [search, setSearch] = useState('');
+
+// Datos ficticios para pruebas
+const [tracks, setTracks] = useState([]);
+
+// Función para cargar canciones desde Firebase
+const fetchMelodiesFromFirebase = async () => {
+  try {
+    const userId = user.uid; // referencia del usuario
+
+    const melodiesCollectionRef = collection(db, `users/${userId}/melodies`);
+    const querySnapshot = await getDocs(melodiesCollectionRef);
+
+    if (querySnapshot.empty) {
+      console.log("No se encontraron canciones guardadas.");
+      return;
+    }
+
+    const melodies = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+     // Sobrescribir el estado en lugar de concatenar
+     setTracks(melodies);
+  } catch (error) {
+    console.log("Error al cargar canciones desde Firebase:", error);
+  }
+};
+
+// Cargar canciones al montar el componente
+useEffect(() => {
+  fetchMelodiesFromFirebase();
+}, []);
 
 
-
-
-
-
-
-
-
-  // useEffect(() => {
-  //   if (!user && !userSession) {
-  //     router.push('/sign-in');
-  //   }
-
-  // }, [user, userSession, router]);
-
+// busqueda de canciones
+const filteredTracks = tracks.filter(track =>
+  track.name.toLowerCase().includes(search.toLowerCase())
+);
 
 
 // Cargar el script de Magenta cuando la página se renderice
@@ -222,6 +269,8 @@ const playSingleNote = async (note) => {
     setIsDisabledPiano(false);
     setIsDisabledGrabar(true);
     setIsDisabledFinalizar(false);
+    setIsPlayingSong(true);
+    setIsDisabledEliminar(true);
   }
 
   // funcion del boton reproducir
@@ -259,7 +308,7 @@ const playSingleNote = async (note) => {
   };
 
   const validacionesGenerarMusicaIA = () => {
-    if (inputValueIndice.length === 0 || inputValuePasos.length === 0 || inputValueNombre.length == 0) {
+    if (inputValueIndice.length === 0 || inputValuePasos.length === 0 || inputValueNombre.length === 0) {
       setMostrarValidacionCamposVacios(true);
       throw new Error("Campos vacíos");
     }
@@ -358,6 +407,7 @@ const playSingleNote = async (note) => {
 
   const BottomResetear = async () => {
     // cambiar estado de los botones y campos
+    setIsDisabledReproducirPlaylist(false);
     setIsDisabledIndice(true);
     setIsDisabledPasos(true);
     setIsDisabledNombre(true);
@@ -380,9 +430,30 @@ const playSingleNote = async (note) => {
      setIsAdding(true); 
   };
 
+  const verificarNombreCancion = async (userId, inputValueNombre) => {
+    try {
+      // Referencia a la colección de melodías del usuario
+      const melodiesCollectionRef = collection(db, `users/${userId}/melodies`);
+  
+      // Verificar si ya existe una canción con el mismo nombre
+      const q = query(melodiesCollectionRef, where("name", "==", inputValueNombre));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        // Si ya existe una canción con el mismo nombre, retornar `true`
+        return true;
+      }
+      return false; // Si no hay duplicados, retornar `false`
+    } catch (error) {
+      console.error("Error al verificar el nombre de la canción:", error);
+      return false; // Retornar `false` en caso de error
+    }
+  };
+  
   const BottomGuardarMelodia = async () => {
+    setIsDisabledReproducirPlaylist(false);
     const userId = user.uid; // Asegúrate de obtener el UID del usuario autenticado
-    
+  
     if (!userId) {
       console.error("No se puede guardar la melodía sin un usuario autenticado.");
       return;
@@ -394,62 +465,140 @@ const playSingleNote = async (note) => {
     }
   
     try {
-
       // Convertir `generatedMelody` a un objeto serializable
       const serializedMelody = JSON.parse(JSON.stringify(generatedMelody));
-      // Extraer los valores necesarios de serializedMelody
       const totalQuantizedSteps = Number(serializedMelody.totalQuantizedSteps); // Total de pasos
       const stepsPerQuarter = Number(serializedMelody.quantizationInfo.stepsPerQuarter); // Pasos por cuarto de nota
       const qpm = Number(serializedMelody.tempos[0].qpm); // Cuartos de nota por minuto (tempo)
-      // Calcular la duración en segundos
+
       const durationInSeconds = (totalQuantizedSteps / stepsPerQuarter) * (60 / qpm);
-    
-      // Guardar datos en la base de datos
+  
+      // Preparar datos para guardar
       const melodyData = {
         name: inputValueNombre,
         duration: durationInSeconds,
-        melody: serializedMelody, // Melodía serializada
-        createdAt: new Date().toISOString(), // Fecha de creación
+        melody: serializedMelody,
+        createdAt: new Date().toISOString(),
       };
   
-      // Agregar la melodía a la colección del usuario
-      await addDoc(collection(db, `users/${userId}/melodies`), melodyData);
+      // Verificar si ya existe una canción con el mismo nombre
+      const isDuplicate = await verificarNombreCancion(userId, inputValueNombre);
   
-      console.log("Melodía guardada exitosamente.");
-      setIsDisabledGuardar(true); // Deshabilitar el botón después de guardar
-    } catch (error) {
-      console.error("Error al guardar la melodía:", error);
-    }
-  };
-
-  const ConsultarCanciones = async () => {
-    const userId = user.uid; // Asegúrate de obtener el UID del usuario autenticado
-  
-    if (!userId) {
-      console.error("No se puede consultar las canciones sin un usuario autenticado.");
-      return;
-    }
-  
-    try {
-      // Referencia a la colección de melodías del usuario
-      const melodiesCollectionRef = collection(db, `users/${userId}/melodies`);
-      const querySnapshot = await getDocs(melodiesCollectionRef);
-  
-      if (querySnapshot.empty) {
-        console.log("No se encontraron canciones guardadas.");
-        return;
+      if (isDuplicate) {
+        // Si la canción ya existe, lanzar un error y detener el flujo
+        throw new Error("Ya existe una canción con ese nombre.");
+      } else {
+        // Si no es un duplicado, guardar la melodía
+        await addDoc(collection(db, `users/${userId}/melodies`), melodyData);
+        setMostrarCancionGuardadaExitoso(true);
       }
   
-      // Recorrer los documentos y obtener las melodías
-      const melodies = querySnapshot.docs.map((doc) => ({
-        id: doc.id, // ID del documento
-        ...doc.data(), // Datos del documento
-      }));
-  
-      console.log("Melodías guardadas:", melodies);
-
+      setIsDisabledGuardar(true); // Deshabilitar el botón después de guardar
+      setIsDisabledNombre(true);
+      setInputValueNombre('');
+      
     } catch (error) {
-      console.error("Error al consultar las canciones:", error);
+      // Mostrar el error en consola y alertar al usuario
+      console.log("Error al guardar la melodía:", error);
+      setMostrarValidacionCancionRepetida(true);
+      setIsDisabledNombre(false);
+      setInputValueNombre('');
+    
+    }
+  
+  };
+  
+
+  // Función para recargar canciones
+  const recargar = () => {
+    fetchMelodiesFromFirebase(); // Vuelve a llamar a la función para cargar canciones
+  };
+
+  
+  // Función para reproducir la canción
+const ReproducircancionUsuario = (cancion) => {
+  if (isPlayingSong) return; // Si ya está reproduciendo una canción, no hacer nada
+
+  const player = new mm.Player();
+
+  // Iniciar reproducción
+  setIsPlayingSong(true); // Bloquear los botones
+  player.start(cancion).then(() => {
+    // Esto se ejecuta cuando la canción termina
+    setIsPlayingSong(false); // Desbloquear los botones
+  });
+
+  // Alternativamente, puedes escuchar el evento `stop()` si la reproducción puede detenerse manualmente:
+  player.stopCallback = () => {
+    setIsPlayingSong(false); // Asegurar desbloqueo de los botones si se detiene manualmente
+  };
+};
+
+  const ReproducirPlaylist = () =>{
+    // habilitar botones en la seccion de canciones
+    setIsPlayingSong(false);
+    setIsDisabledEliminar(false);
+    setIsDisabledReproducirPlaylist(true);
+    setIsDisabledReiniciarFlujo(false);
+    setIsDisabledRecargar(false);
+    // solo dejar habilitado el boton grabar reniciando el flujo
+    setIsDisabledFinalizar(true);
+    setIsDisabledReproducir(true);
+    setIsDisabledReiniciar(true);
+    setIsDisabledGrabar(true);
+    // desabilitar la seccion de crear canciones
+    setIsDisabledGenerarReproducir(true);
+    setIsDisabledReinicarMelodia(true);
+    setIsDisabledResetear(true);
+    setIsDisabledIndice(true);
+    setIsDisabledNombre(true);
+    setIsDisabledPasos(true);
+
+  }
+
+  const ReiniciarFlujo = () => {
+    // habilitar y desabilitar botones
+    setIsPlayingSong(true);
+    setIsDisabledEliminar(true);
+    setIsDisabledGrabar(false);
+    setIsDisabledReproducirPlaylist(false);
+    setIsDisabledReiniciarFlujo(true);
+    setIsDisabledRecargar(false);
+
+    // Vaciar el JSON de notas
+    setTwinkleTwinkle({
+      notes: [],
+      totalTime: 0,
+    });
+    // Reiniciar `startTime` al valor inicial
+    setStartTime(0);
+    // habilitar `isAdding` 
+    setIsAdding(true); 
+
+  }
+
+
+  const EliminarCancionUsuario = async (cancionId) => {
+    try {
+      setIsDisabledEliminar(true); // Deshabilitar botones de eliminación
+  
+      // Referencia al documento específico de la canción
+      const userId = user.uid; // Asegúrate de que `user` contiene el UID del usuario
+      const melodyDocRef = doc(db, `users/${userId}/melodies`, cancionId);
+  
+      // Eliminar el documento
+      await deleteDoc(melodyDocRef);
+
+      setMostrarCancionEliminadaExitoso(true);
+  
+      // Actualizar la lista local de canciones
+      setTracks((prevTracks) => prevTracks.filter((track) => track.id !== cancionId));
+  
+      console.log(`Canción con ID ${cancionId} eliminada exitosamente.`);
+    } catch (error) {
+      console.error("Error al eliminar la canción:", error);
+    } finally {
+      setIsDisabledEliminar(false); // Habilitar los botones nuevamente
     }
   };
   
@@ -529,14 +678,14 @@ const playSingleNote = async (note) => {
 
       {/* Titulo Principal */}
       <main className="w-full px-8">
-        <h1 className="block font-bold text-4xl text-white text-left mt-20">
+        <h1 className="absolute font-bold text-4xl text-white text-left top-10">
           Genera tu propia melodía
         </h1>
       </main>
 
       {/* Sección del Piano superior */}
 
-      <div className="relative flex items-end ml-8 mt-6">
+      <div className="relative flex items-end ml-8 mt-28">
 
             {/* seccion de 3 teclas */}
 
@@ -700,26 +849,30 @@ const playSingleNote = async (note) => {
 
 
     {/* Seccion de botones derecha */}
-    <div className="fixed top-1/4 right-24 flex flex-col items-end space-y-4">
+    <div className="fixed top-36 right-48 flex flex-col items-end space-y-4">
         <div className="flex space-x-4">
 
-            <button disabled={isDisabledGrabar} onClick={() => ClickBottonGrabar()} className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-700 transition">
-            <span className="mr-2">🔴</span> Grabar
+            <button disabled={isDisabledGrabar} onClick={() => ClickBottonGrabar()} className="flex items-center px-5 font-bold py-3 bg-[#1F1F1F] text-white rounded-lg shadow hover:bg-gray-700 transition ">
+            <img src="/image_IA/icon_grabar.svg" alt="Icono de grabar" className="w-6 h-6 mr-2"/>
+              Grabar
             </button>
 
-            <button disabled={isDisabledFinalizar} onClick={() => finishAdding()} className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-700 transition">
-            <span className="mr-2">⏹️</span> Finalizar
+            <button disabled={isDisabledFinalizar} onClick={() => finishAdding()} className="flex items-center px-5 font-bold py-3 bg-[#1F1F1F] text-white rounded-lg shadow hover:bg-gray-700 transition ">
+            <img src="/image_IA/icon_finalizar.svg" alt="Icono de finalizar" className="w-6 h-6 mr-2"/>
+             Finalizar
             </button>
 
         </div>
         <div className="flex space-x-4">
 
-            <button disabled={isDisabledReproducir} onClick={() => BottomReproducir()} className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-700 transition">
-            <span className="mr-2">▶️</span> Reproducir
+            <button disabled={isDisabledReproducir} onClick={() => BottomReproducir()} className="flex items-center px-5 font-bold py-3 bg-[#1F1F1F] text-white rounded-lg shadow hover:bg-gray-700 transition">
+            <img src="/image_IA/icon_reproducir.svg" alt="Icono de reproducir" className="w-6 h-6 mr-2"/>
+             Reproducir
             </button>
 
-            <button disabled={isDisabledReiniciar} onClick={() => BottomReiniciar()} className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-lg shadow hover:bg-gray-700 transition">
-            <span className="mr-2">🔄</span> Reiniciar
+            <button disabled={isDisabledReiniciar} onClick={() => BottomReiniciar()} className="flex items-center px-5 font-bold py-3 bg-[#1F1F1F] text-white rounded-lg shadow hover:bg-gray-700 transition">
+            <img src="/image_IA/icon_reiniciar.svg" alt="Icono de reproducir" className="w-6 h-6 mr-2"/>
+             Reinicar
             </button>
             
         </div>
@@ -728,68 +881,125 @@ const playSingleNote = async (note) => {
 
      {/* Seccion de funciones con IA */}
 
-     <div className=" text-white max-w-sm mx-auto absolute left-8 bottom-6">
-        <h3 className="text-center text-lg font-semibold mb-4">Funciones con IA</h3>
+     <div className=" text-white max-w-72 mx-auto absolute left-8 bottom-2">
+        <h3 className="text-left text-3xl font-semibold mb-4">Funciones con IA</h3>
         
         {/* Input para Índice de aleatoriedad */}
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Índice de aleatoriedad (0.0 - 2.0)</label>
-          <input disabled={isDisabledIndice} value={inputValueIndice} onChange={handleInputIndiceChange} placeholder="0.0" className="w-full bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <label className="block text-base mb-1">Índice de aleatoriedad (0.0 - 2.0)</label>
+          <input disabled={isDisabledIndice} value={inputValueIndice} onChange={handleInputIndiceChange} placeholder="0.0" className="w-full bg-transparent border-b-2 border-slate-800 focus:outline-none focus:border-blue-500 disabled:border-gray-400 disabled:text-gray-400" />
         </div>
 
         {/* Input para Cantidad de pasos */}
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Cantidad de pasos (30 - 500)</label>
-          <input disabled={isDisabledPasos} value={inputValuePasos} onChange={handleInputPasosChange} placeholder="30" className="w-full bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <label className="block text-base mb-1">Cantidad de pasos (30 - 500)</label>
+          <input disabled={isDisabledPasos} value={inputValuePasos} onChange={handleInputPasosChange} placeholder="30" className="w-full bg-transparent border-b-2 border-slate-800 focus:outline-none focus:border-blue-500 disabled:border-gray-400 disabled:text-gray-400" />
         </div>
 
         {/* Input nombre de la cancion */}
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Nombre de la cancion(maximo 50 caracteres)</label>
-          <input disabled={isDisabledNombre} value={inputValueNombre} onChange={handleInputNombreChange} placeholder="30" className="w-full bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <label className="block text-base mb-1">Nombre de la cancion(maximo 50 caracteres)</label>
+          <input disabled={isDisabledNombre} value={inputValueNombre} onChange={handleInputNombreChange} placeholder="name" className="w-full bg-transparent border-b-2 border-slate-800 focus:outline-none focus:border-blue-500 disabled:border-gray-400 disabled:text-gray-400" />
         </div>
 
-        {/* Botones para Guardar y Reiniciar */}
+        {/* Botones para Guardar Reiniciar y resetear */}
         <div className="relative">
-          <button onClick={() => BottomGuardarMelodia()} disabled={isDisabledGuardar} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 absolute -right-56 bottom-28"> Guardar </button>
-          <button onClick={() => BottomReiniciarMelodia()} disabled={isDisabledReinicarMelodia} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 absolute left-96 bottom-10"> Reiniciar seccion </button>
-          <button onClick={() => BottomResetear()} disabled={isDisabledResetear} className="px-4 py-2 bg-slate-900 hover:bg-slate-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 absolute -right-32 bottom-28"> Resetear </button>
+          <button onClick={() => BottomGuardarMelodia()} disabled={isDisabledGuardar} className="flex items px-5 py-3 bg-[#1F1F1F] hover:bg-gray-700 text-sm font-bold rounded-lg absolute -right-80 bottom-32 w-32">
+            <img src="/image_IA/icon_guardar.svg" alt="Icono de reproducir" className="w-6 h-6 mr-2"/>
+            Guardar
+          </button>
+          <button onClick={() => BottomReiniciarMelodia()} disabled={isDisabledReinicarMelodia} className=" flex items px-5 py-3 bg-[#1F1F1F] hover:bg-gray-700 text-sm font-bold rounded-lg absolute left-80 bottom-8 w-32 ">
+            <img src="/image_IA/icon_reiniciarSeccion.svg" alt="Icono de reproducir" className="w-6 h-6 mr-2"/>
+            Reiniciar seccion 
+          </button>
+          <button onClick={() => BottomResetear()} disabled={isDisabledResetear} className=" flex items px-5 py-3 bg-[#1F1F1F] hover:bg-gray-700 text-sm font-medium rounded-lg  absolute left-80 bottom-32 w-32">
+            <img src="/image_IA/icon_resetear.svg" alt="Icono de reproducir" className="w-6 h-6 mr-2"/>
+            Resetear
+          </button>
         </div>
 
 
         {/* Botones para Generar y Reproducir melodía */}
         <div className="relative">
-          <button onClick={() => GenerarReproducirMelodia()} disabled={isDisabledGenerarReproducir} className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 absolute w-52 left-80 bottom-40">
-            🎵 Generar y reproducir melodía
+          <button onClick={() => GenerarReproducirMelodia()} disabled={isDisabledGenerarReproducir} className="flex items-left px-5 py-3 bg-[#1F1F1F] hover:bg-gray-700 transition text-sm font-bold rounded-lg focus:outline-none absolute w-56 left-80 bottom-52">
+          <img src="/image_IA/icon_grabarReiniciar.svg" alt="Icono de reproducir" className="w-6 h-6 mr-2"/>
+             Generar y reproducir melodia
           </button>
         </div>
-
-        {/* Boton para consultar las melodias
-        <div className="relative">
-          <button onClick={() => ConsultarCanciones()} className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 absolute w-52 -right-full bottom-0">
-            🎵 consultar
-          </button>
-        </div> */}
 
       </div>
 
 
+        {/* Sección de visualización de canciones */}
 
+       
+        <div className="pl-4 pr-4 pt-4 rounded-lg w-1/3 mx-auto text-white absolute right-60 bottom-6 h-64 shadow-lg overflow-hidden" style={{ background: 'linear-gradient(to top, #2D2E33 59%, #4A4B4E 100%)',}}>
+          {/* Barra de búsqueda e ícono de recarga */}
+          <div className="flex items-center mb-4">
+            <input
+              type="text"
+              placeholder="Buscar"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full p-2 rounded-3xl bg-transparent border-black border-2 text-white placeholder-black"
+            />
+            <button onClick={() => recargar()} disabled = {isPlayingSong || isDisabledRecargar} className="ml-2 p-2 bg-transparent rounded-lg hover:bg-gray-600 transition" title="Recargar canciones">
+              <img src="/image_IA/icon_recargar.svg" alt="Icono de recargar" className="w-8 h-8"/> 
+            </button>
+            <button onClick={() => ReproducirPlaylist()} disabled = {(isDisabledReproducirPlaylist && isDisabledGenerarReproducir) || isDisabledGenerarReproducir} className="ml-2 p-2 bg-transparent rounded-lg hover:bg-gray-600 transition" title="Reproducir Playlist">
+              <img src="/image_IA/icon_playlist.svg" alt="Icono de reproducir playlist" className="w-8 h-8"/> 
+            </button>
+            <button onClick={() => ReiniciarFlujo()} disabled = {isDisabledReiniciarFlujo || isPlayingSong} className="ml-2 p-2 bg-transparent rounded-lg hover:bg-gray-600 transition" title="Reiniciar flujo">
+              <img src="/image_IA/icon_resetearTotal.svg" alt="Icono de reiniciar flujo" className="w-8 h-8"/> 
+            </button>
+          </div>
 
-
-
-
-
-
-    
-
-    
-
-
-
-
-    
-
+          {/* Lista de canciones con scroll */}
+          <div
+            className="space-y-4 h-[calc(100%-74px)] overflow-y-auto custom-scrollbar pr-2"
+            style={{ paddingBottom: "0px" }} // Ajustar el relleno inferior dinámicamente
+          >
+            {filteredTracks.map((track) => (
+              <div
+                key={track.id}
+                className="flex items-center justify-between p-3 rounded-lg shadow border-2 border-black" style={{ background: 'linear-gradient(to right, #2D2E33 59%, #4A4B4E 100%)',}}
+              >
+                <div className="flex items-center">
+                  <img
+                    src={track.icon || "/image_IA/logo_cancion.png"}
+                    alt="Icono de melodía"
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <div>
+                    <p className="font-medium">{track.name}</p>
+                    <p className="text-sm text-gray-400">{track.duration + " segundos" || "00:00"}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-0">
+                <button
+                  onClick={() => ReproducircancionUsuario(track.melody)}
+                  className={` p-1 bg-transparent rounded-lg hover:bg-slate-600 transition ${
+                    isPlayingSong ? "cursor-not-allowed opacity-50" : ""
+                  }`}
+                  disabled={isPlayingSong} // Botón deshabilitado si está reproduciendo
+                >
+                  <img src="/image_IA/icon_play-song.svg" alt="Icono de reproducir" className="w-8 h-8"/>
+                </button>
+                  <button
+                    onClick={() => EliminarCancionUsuario(track.id)}
+                    className="p-1  bg-transparent rounded-lg hover:bg-slate-600 transition"
+                    disabled={isDisabledEliminar || isPlayingSong}
+                  >
+                    <img src="/image_IA/icon_deleteSong.svg" alt="Icono de reproducir" className="w-8 h-8"/>
+                  </button>
+                </div>
+              </div>
+            ))}
+            {filteredTracks.length === 0 && (
+              <p className="text-center text-gray-400">No se encontraron melodías.</p>
+            )}
+          </div>
+        </div>
 
     {/* Componentes de las alertas */}
 
@@ -808,6 +1018,24 @@ const playSingleNote = async (note) => {
     {mostrarValidacionCamposExtension && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
             <ValidacionCamposExtension setMostrarValidacionCamposExtension={setMostrarValidacionCamposExtension} />
+        </div>
+    )}
+
+    {mostrarValidacionCancionRepetida && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+            <ValidacionCancionRepetida setMostrarValidacionCancionRepetida={setMostrarValidacionCancionRepetida} />
+        </div>
+    )}
+
+    {mostrarCancionEliminadaExitoso && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+            <CancionEliminadaExitoso setMostrarCancionEliminadaExitoso={setMostrarCancionEliminadaExitoso} />
+        </div>
+    )}
+
+    {mostrarCancionGuardadaExitoso && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+            <CancionGuardadaExitoso setMostrarCancionGuardadaExitoso={setMostrarCancionGuardadaExitoso} />
         </div>
     )}
 

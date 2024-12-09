@@ -4,7 +4,6 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { auth } from '@/app/firebase/config'
 import { useRouter } from 'next/navigation';
 import OlvidoPassword from '@/components/Alertas/olvido_password';
-import RestablecerCorreo from '@/components/Alertas/restablecer_correo';
 import ValidacionCamposVacios from '@/components/Alertas/validacion_campos_vacios';
 import ValidacionCampoCorreo from '@/components/Alertas/validacion_formato_correo';
 import ValidacionCampoContraseña from '@/components/Alertas/validacion_formato_contraseña';
@@ -178,25 +177,6 @@ const SignIn = () => {
               {mostrarAlertaContra && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
                   <OlvidoPassword setMostrarAlertaContra={setMostrarAlertaContra} />
-                </div>
-              )}
-            </div>
-
-            <div className="relative">
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  setMostrarAlertaCorreo(true);
-                }}
-                className="text-white text-lg font-semibold underline"
-              >
-                Restablecer correo electrónico
-              </a>
-
-              {mostrarAlertaCorreo && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-                  <RestablecerCorreo setMostrarAlertaCorreo={setMostrarAlertaCorreo} />
                 </div>
               )}
             </div>
